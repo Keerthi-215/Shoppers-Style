@@ -1,4 +1,5 @@
-import React from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Search,
   User,
@@ -9,6 +10,10 @@ import {
   Phone,
 } from "lucide-react";
 const ShoppersHeader = () => {
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || {}
+  );
+
   return (
     <header className="w-full bg-gray-900 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,52 +74,60 @@ const ShoppersHeader = () => {
           </div>
           {/* Navigation */}
           <nav className="hidden md:flex space-x-10">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
             >
               <Home className="mr-1 h-4 w-4" />
               Home
-            </a>
-            <a
-              href="/collections"
+            </Link>
+            <Link
+              to="/collections"
               className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
             >
               <Grid className="mr-1 h-4 w-4" />
               Collections
-            </a>
-            <a
-              href="/about"
+            </Link>
+            <Link
+              to="/about"
               className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
             >
               <Info className="mr-1 h-4 w-4" />
               About
-            </a>
-            <a
-              href="/contact"
+            </Link>
+            <Link
+              to="/contact"
               className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
             >
               <Phone className="mr-1 h-4 w-4" />
               Contact
-            </a>
+            </Link>
+            {user && user?.role === "admin" && (
+              <Link
+                to="/admin"
+                className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
+              >
+                Admin page
+              </Link>
+            )}
           </nav>
           {/* Icons */}
           <div className="flex items-center space-x-6">
             <button className="text-gray-300 hover:text-purple-400">
               <Search className="h-5 w-5" />
             </button>
-            <a href="/login" className="text-gray-300 hover:text-purple-400">
+            <Link to="/login" className="text-gray-300 hover:text-purple-400">
               <User className="h-5 w-5" />
-            </a>
-            <a
-              href="/cart"
+            </Link>
+            <Link
+              to="/cart"
               className="relative text-gray-300 hover:text-purple-400"
             >
               <ShoppingCart className="h-5 w-5" />
               <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 0
               </span>
-            </a>
+            </Link>
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
