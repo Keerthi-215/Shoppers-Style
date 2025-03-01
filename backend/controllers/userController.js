@@ -33,7 +33,7 @@ const getUserById = async (req, res, next) => {
  */
 const createUser = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, address, role } = req.body;
 
     // Check if the user already exists
     const userExists = await User.findOne({ email });
@@ -46,6 +46,7 @@ const createUser = async (req, res, next) => {
       name,
       email,
       password,
+      address, // Include address in the user creation
       role: role || "user", // Default to "user" if not specified
     });
 
@@ -78,6 +79,7 @@ const updateUser = async (req, res, next) => {
     // Update fields
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
+    user.address = req.body.address || user.address; // Update address field
     if (req.body.password) {
       user.password = req.body.password;
     }

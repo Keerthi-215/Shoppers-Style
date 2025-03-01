@@ -40,11 +40,11 @@ const getProductById = async (req, res, next) => {
  */
 const createProduct = async (req, res, next) => {
   try {
-    const { name, category, price, stock, brand, description } = req.body;
+    const { name, category, price, stock, description, size, subcategory } =
+      req.body;
 
     const image = req.file;
-
-    if (!name || !category || !price || !stock || !brand) {
+    if (!name || !category || !price || !stock) {
       return next(new ErrorResponse("Please provide all required fields", 400));
     }
 
@@ -53,14 +53,15 @@ const createProduct = async (req, res, next) => {
       category,
       price,
       stock,
-      brand,
       description,
+      size,
+      subcategory,
     });
 
     if (image) {
       try {
         const blob = bucket.file(
-          `images/${name}/${Date.now()}_${image.originalname}`
+          `images/products/${category}/${Date.now()}_${image.originalname}`
         );
         const blobStream = blob.createWriteStream({
           metadata: { contentType: image.mimetype },
@@ -68,7 +69,7 @@ const createProduct = async (req, res, next) => {
 
         await new Promise((resolve, reject) => {
           blobStream.on("error", (err) =>
-            reject(new ErrorResponse("Image upload failed", 500))
+            reject(new CustomError("Image upload failed", 500))
           );
           blobStream.on("finish", resolve);
           blobStream.end(image.buffer);
@@ -79,13 +80,17 @@ const createProduct = async (req, res, next) => {
           action: "read",
           expires: "03-01-2500",
         });
-        newProduct.image = signedUrl[0];
+        console.log(signedUrl[0]);
+
+        newProduct.imageUrl = signedUrl[0];
       } catch (error) {
-        return next(new ErrorResponse("Image upload failed", 500));
+        next(new CustomError("Image upload failed", 500));
       }
     }
 
     const createdProduct = await newProduct.save();
+
+    // console.log(name, category, price, stock, description);
 
     res.status(201).json({
       success: true,

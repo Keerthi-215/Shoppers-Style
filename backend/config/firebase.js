@@ -1,5 +1,7 @@
 import admin from "firebase-admin";
 
+console.log(process.env.FIREBASE_SERVICE_BUCKET_NAME);
+
 const storageBucket = process.env.FIREBASE_SERVICE_BUCKET_NAME;
 const firebaseServiceAccount = {
   type: "service_account",
