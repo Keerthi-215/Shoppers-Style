@@ -60,7 +60,8 @@ const ShoppersFooter = () => {
                 <Phone className="w-4 h-4 mr-2" /> +1 (800) 123-4567
               </p>
               <p className="flex items-center">
-                <MapPin className="w-4 h-4 mr-2" /> 123 Fashion St, NY, USA
+                <MapPin className="w-4 h-4 mr-2" /> 500 Trendy Ave, Los Angeles,
+                CA, USA
               </p>
             </div>
           </div>
@@ -82,7 +83,7 @@ const ShoppersFooter = () => {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-700 pt-4 text-center text-sm">
+        <div className="mt-8 border-t border-gray-700 pt-4 text-purple-400 text-center text-sm">
           <p>
             &copy; {new Date().getFullYear()} Shoppers. All rights reserved.
           </p>
