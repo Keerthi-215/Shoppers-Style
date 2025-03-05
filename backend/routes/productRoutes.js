@@ -18,7 +18,7 @@ router.get("/", getAllProducts); // Get all products
 router.get("/:id", getProductById); // Get a single product by ID
 router.post("/", upload.single("image"), createProduct); // Create a new product
 // router.post("/", protect, upload.single("image"), createProduct); // Create a new product
-router.put("/:id", protect, upload.single("image"), updateProduct); // Update a product
-router.delete("/:id", protect, deleteProduct); // Delete a product
+router.put("/:id", upload.single("image"), updateProduct); // Update a product
+router.delete("/:id", deleteProduct); // Delete a product
 
 export default router;
