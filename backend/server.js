@@ -10,6 +10,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 // Load environment variables
@@ -22,8 +23,16 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Body parser
-app.use(cors()); // Enable CORS
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
+// Enable CORS
 app.get("/", (req, res) => {
   res.send("Hello");
 });
@@ -37,6 +46,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Global Error Handling
 app.use(notFound);
@@ -46,11 +56,11 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-// when getin token from login store is in localstorage
+// when getting token from login store it in localStorage
 // localStorage.setItem("token", token)
 
-// when sendin a protected http
-// const token= JSON.parse(localStorage.getItem("toke"))
+// when sending a protected HTTP request
+// const token = JSON.parse(localStorage.getItem("token"))
 
 // authorization: token,
 

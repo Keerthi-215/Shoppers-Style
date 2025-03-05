@@ -108,7 +108,10 @@ const Login = () => {
               />
             </div>
 
-            <button type="submit" className="w-full btn btn-primary">
+            <button
+              type="submit"
+              className="w-full btn text-white bg-[#C084FC] hover:bg-[#9333EA]"
+            >
               Login
             </button>
 

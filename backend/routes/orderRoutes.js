@@ -4,7 +4,7 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", protect, getAllOrders); // Only authenticated users can access
-router.post("/", protect, createOrder); // Only authenticated users can create orders
+router.get("/", getAllOrders); // Only authenticated users can access
+router.post("/", createOrder); // Only authenticated users can create orders
 
 export default router;

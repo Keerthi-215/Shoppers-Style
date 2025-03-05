@@ -16,4 +16,5 @@ router.post("/", upload.single("image"), createProduct); // Create a new product
 // router.post("/", protect, upload.single("image"), createProduct); // Create a new product
 router.put("/:id", upload.single("image"), updateProduct); // Update a product
 router.delete("/:id", deleteProduct); // Delete a product
+
 export default router;

@@ -8,6 +8,7 @@ import {
   Grid,
   Info,
   Phone,
+  ShieldCheck,
 } from "lucide-react";
 import { useCart } from "../components/CartContext"; // Import the useCart hook
 
@@ -70,7 +71,7 @@ const ShoppersHeader = () => {
                   className="text-xl font-bold text-white"
                   style={{ letterSpacing: "-0.05em" }}
                 >
-                  shop<span className="text-purple-400">pers</span>
+                  <span className="text-purple-400">Shoppers</span>
                 </span>
                 <div className="h-0.5 w-16 bg-gray-700 mt-0.5"></div>
               </div>
@@ -111,7 +112,8 @@ const ShoppersHeader = () => {
                 to="/admin"
                 className="flex items-center text-sm font-medium text-gray-300 hover:text-purple-400"
               >
-                Admin page
+                <ShieldCheck className="mr-1 h-4 w-4" />
+                Admin
               </Link>
             )}
           </nav>

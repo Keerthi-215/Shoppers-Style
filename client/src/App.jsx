@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./components/CartContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -19,6 +22,11 @@ import Order from "./pages/Order";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import axios from "axios";
 
+import About from "./pages/About";
+import Contact from "./pages/Contact"; // Correct import for Contact component
+import ViewProducts from "./pages/ViewProduct";
+
+// Set up a global axios instance for API calls to the backend on port 5000
 const api = axios.create({
   baseURL: "http://localhost:5000",
   headers: { "Content-Type": "application/json" },
@@ -36,6 +44,9 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact api={api} />} />
+          <Route path="/view-product" element={<ViewProducts api={api} />} />
           <Route path="/create-product" element={<CreateProduct api={api} />} />
           <Route path="/collections" element={<Collections api={api} />} />
           <Route path="/product/:id" element={<ProductDetails api={api} />} />
