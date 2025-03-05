@@ -14,22 +14,33 @@ const Login = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      navigate("/posts"); // Redirect to posts if already logged in
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage("");
+    setMessage(""); // Reset message on form submission
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
-      setUser(response.data.user);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      setMessage("Login successful!");
-      navigate("/posts"); // Redirect to posts after login
+
+      const { token, user } = response.data; // Extract token & user data
+
+      if (token && user) {
+        localStorage.setItem("token", token); // ✅ Store token
+        localStorage.setItem("user", JSON.stringify(user)); // ✅ Store user object
+        localStorage.setItem("userId", user._id); // ✅ Store user ID separately
+
+        setUser(user); // Update user state to reflect the logged-in user
+        setMessage("Login successful!");
+        navigate("/posts"); // Redirect to posts after login
+      } else {
+        setMessage("Invalid login response, please try again.");
+      }
     } catch (error) {
       setMessage(error.response?.data?.message || "Login failed");
     }
@@ -38,6 +49,8 @@ const Login = () => {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token"); // ✅ Remove token on logout
     setMessage("Logout successful!");
     navigate("/login");
   };

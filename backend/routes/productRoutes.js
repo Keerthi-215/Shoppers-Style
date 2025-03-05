@@ -7,13 +7,9 @@ import {
   deleteProduct,
 } from "../controllers/productController.js";
 import upload from "../middleware/uploadMiddleware.js";
-
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
-
 // const upload = multer({ storage: multer.memoryStorage() });
-
 const router = express.Router();
-
 router.get("/", getAllProducts); // Get all products
 router.get("/:id", getProductById); // Get a single product by ID
 router.post("/", upload.single("image"), createProduct); // Create a new product

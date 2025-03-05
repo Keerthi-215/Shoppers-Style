@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -10,10 +10,14 @@ import {
   Phone,
   ShieldCheck,
 } from "lucide-react";
+import { useCart } from "../components/CartContext"; // Import the useCart hook
+
 const ShoppersHeader = () => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || {}
   );
+
+  const { totalItems } = useCart(); // Access the totalItems from CartContext
 
   return (
     <header className="w-full bg-gray-900 shadow-md">
@@ -126,9 +130,12 @@ const ShoppersHeader = () => {
               className="relative text-gray-300 hover:text-purple-400"
             >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
+              {/* Show the cart count if there are items in the cart */}
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -157,4 +164,5 @@ const ShoppersHeader = () => {
     </header>
   );
 };
+
 export default ShoppersHeader;

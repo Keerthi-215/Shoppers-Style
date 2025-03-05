@@ -1,118 +1,55 @@
-import User from "../models/User.js";
-import ErrorResponse from "../utils/errorResponse.js";
+import User from "../models/User.js"; // Import your User model
 
-/**
- * Get all users (Admin only)
- */
-const getAllUsers = async (req, res, next) => {
+// Function to get user profile
+const getUserProfile = async (req, res) => {
   try {
-    const users = await User.find().select("-password"); // Exclude password field
-    res.status(200).json(users);
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
-
-/**
- * Get user by ID
- */
-const getUserById = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.user._id); // Find user by ID from the request
     if (!user) {
-      return next(new ErrorResponse("User not found", 404));
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user);
+    res.json(user); // Return the user profile as a response
   } catch (error) {
-    next(new ErrorResponse("Invalid user ID", 400));
-  }
-};
-
-/**
- * Create a new user (Admin only)
- */
-const createUser = async (req, res, next) => {
-  try {
-    const { name, email, password, address, role } = req.body;
-
-    // Check if the user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return next(new ErrorResponse("User already exists", 400));
-    }
-
-    // Create a new user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      address, // Include address in the user creation
-      role: role || "user", // Default to "user" if not specified
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      user,
-    });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
-
-/**
- * Update user details (Admin or the same user)
- */
-const updateUser = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return next(new ErrorResponse("User not found", 404));
-    }
-
-    // Allow user to update their own profile or admin to update any profile
-    if (req.user.id !== user.id && !req.user.isAdmin) {
-      return next(new ErrorResponse("Unauthorized action", 403));
-    }
-
-    // Update fields
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.address = req.body.address || user.address; // Update address field
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-
-    const updatedUser = await user.save();
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully",
-      user: updatedUser,
-    });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
-
-/**
- * Delete a user (Admin only)
- */
-const deleteUser = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return next(new ErrorResponse("User not found", 404));
-    }
-
-    await user.deleteOne(); // Use deleteOne() instead of remove()
     res
-      .status(200)
-      .json({ success: true, message: "User deleted successfully" });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
+      .status(500)
+      .json({ message: "Error retrieving user profile", error: error.message });
   }
 };
 
-export { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+// Function to update user profile
+const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id); // Find user by ID from the request
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.name = req.body.name || user.name; // Update user properties
+    user.email = req.body.email || user.email;
+    // Additional user properties to update can be added here
+
+    const updatedUser = await user.save(); // Save the updated user
+    res.json(updatedUser); // Return updated user as response
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating user profile", error: error.message });
+  }
+};
+
+// Function to delete user
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await user.remove(); // Remove user from database
+    res.json({ message: "User removed successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: error.message });
+  }
+};
+
+// Exporting all functions
+export { getUserProfile, updateUserProfile, deleteUser };
