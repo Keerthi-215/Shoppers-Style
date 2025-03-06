@@ -1,16 +1,19 @@
 import express from "express";
+import { protect, isAdmin } from "../middleware/authMiddleware.js"; // Protect and isAdmin middleware
 import {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
+  getUserProfile,
+  updateUserProfile,
   deleteUser,
-} from "../controllers/userController.js";
-import { protect, isAdmin } from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js"; // Import file upload middleware
+} from "../controllers/userController.js"; // Importing controller functions
 
 const router = express.Router();
 
+// Protect middleware for routes that require authentication
+router.get("/profile", protect, getUserProfile); // Get user profile (only authenticated users)
+router.put("/profile", protect, updateUserProfile); // Update user profile (only authenticated users)
+router.delete("/:id", protect, isAdmin, deleteUser); // Delete user (only admins)
+
+// Exporting the router
 // ✅ Get all users (Admin-only)
 router.get("/", protect, getAllUsers);
 // router.get("/", protect, getAllUsers);
