@@ -33,18 +33,18 @@ const NavigationPanel = () => {
         <Phone className="mr-1 h-4 w-4" />
         Contact
       </Link>
-      <div className="flex space-x-6">
+      <div className="flex space-x-6 bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700">
         <Link to="/register" className="text-gray-300 hover:text-purple-400">
           Register
         </Link>
         <Link to="/login" className="text-gray-300 hover:text-purple-400">
           Login
         </Link>
-        <Link to="/logout" className="text-gray-300 hover:text-purple-400">
-          Logout
-        </Link>
         <Link to="/profile" className="text-gray-300 hover:text-purple-400">
           <User className="h-5 w-5" />
+        </Link>
+        <Link to="/logout" className="text-gray-300 hover:text-purple-400">
+          Logout
         </Link>
       </div>
     </nav>
