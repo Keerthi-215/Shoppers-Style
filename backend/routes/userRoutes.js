@@ -19,7 +19,7 @@ router.get("/", protect, getAllUsers);
 router.get("/:id", protect, getUserById);
 
 // ✅ Create a new user
-router.post("/", createUser);
+router.post("/", protect, createUser);
 // router.post("/", protect, createUser);
 
 // ✅ Update a user by ID (Admin or the same user)
