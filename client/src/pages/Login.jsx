@@ -14,30 +14,34 @@ const Login = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      navigate("/posts"); // Redirect to posts if already logged in
+      navigate("/"); // ✅ Redirect to homepage if already logged in
     }
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage(""); // Reset message on form submission
-
+    setMessage(""); // Reset message on new login attempt
+    //console.log("message ");
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
 
-      const { token, user } = response.data; // Extract token & user data
+      const { token, user } = data;
+      console.log(token, user);
 
       if (token && user) {
-        localStorage.setItem("token", token); // ✅ Store token
-        localStorage.setItem("user", JSON.stringify(user)); // ✅ Store user object
-        localStorage.setItem("userId", user._id); // ✅ Store user ID separately
+        // ✅ Store token and user details in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("userId", user._id);
 
-        setUser(user); // Update user state to reflect the logged-in user
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // ✅ Set default axios token
+
+        setUser(user); // Update state
         setMessage("Login successful!");
-        navigate("/"); // Redirect to homepage after login
+        navigate("/"); // ✅ Redirect to homepage after login
       } else {
         setMessage("Invalid login response, please try again.");
       }
@@ -50,7 +54,8 @@ const Login = () => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
-    localStorage.removeItem("token"); // ✅ Remove token on logout
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"]; // ✅ Remove auth token from axios
     setMessage("Logout successful!");
     navigate("/login");
   };

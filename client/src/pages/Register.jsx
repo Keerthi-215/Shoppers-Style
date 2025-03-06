@@ -2,41 +2,58 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// API instance for cleaner requests
 const api = axios.create({
-  baseURL: "http://localhost:5000", // Match backend API
+  baseURL: "http://localhost:5000/api/auth",
   headers: { "Content-Type": "application/json" },
 });
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [address, setAddress] = useState(""); // Add address state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    address: "",
+  });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const navigate = useNavigate();
 
+  // Handle input changes dynamically
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
+  };
+
+  // Handle form submission
   const handleCreateUser = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    try {
-      await axios.post("http://localhost:5000/api/auth/register", {
-        name,
-        email,
-        password,
-        address, // Include address in the request
-      });
+    // Basic validation check before sending the request
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.address
+    ) {
+      setError("All fields are required.");
+      return;
+    }
 
-      setSuccess("User created successfully!");
-      setName("");
-      setEmail("");
-      setPassword("");
-      setAddress(""); // Clear address field
-      navigate("/login");
+    try {
+      await api.post("/register", formData);
+
+      setSuccess("User created successfully! Redirecting...");
+      setFormData({ name: "", email: "", password: "", address: "" });
+
+      // Redirect to login after short delay
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
       setError(error.response?.data?.message || "Failed to create user");
     }
   };
@@ -54,36 +71,40 @@ const Register = () => {
 
         <input
           type="text"
+          name="name"
           placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={formData.name}
+          onChange={handleChange}
           className="w-full input input-bordered"
           required
         />
 
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
           className="w-full input input-bordered"
           required
         />
 
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
           className="w-full input input-bordered"
           required
         />
 
         <input
           type="text"
+          name="address"
           placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          value={formData.address}
+          onChange={handleChange}
           className="w-full input input-bordered"
           required
         />
