@@ -13,7 +13,6 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    // When the app first loads, try to load the cart from localStorage (if any)
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
@@ -24,20 +23,34 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
+      const existingItem = prevItems.find(
+        (item) => item._id === product._id || item.id === product.id
+      );
+
       if (existingItem) {
         return prevItems.map((item) =>
-          item.id === product.id
+          item._id === product._id || item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }];
       }
-      return [...prevItems, { ...product, quantity: 1 }];
     });
   };
 
   const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    console.log("Removing item with ID:", id); // Debugging log
+    setCartItems((prevItems) => {
+      const updatedCart = prevItems.filter(
+        (item) => item._id !== id && item.id !== id
+      );
+      console.log("Updated Cart:", updatedCart);
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+      return updatedCart;
+    });
   };
 
   const clearCart = () => {
@@ -48,7 +61,9 @@ export const CartProvider = ({ children }) => {
   const increaseQuantity = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        item._id === id || item.id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
       )
     );
   };
@@ -56,7 +71,7 @@ export const CartProvider = ({ children }) => {
   const decreaseQuantity = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id && item.quantity > 1
+        item._id === id || (item.id === id && item.quantity > 1)
           ? { ...item, quantity: item.quantity - 1 }
           : item
       )
