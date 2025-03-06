@@ -1,17 +1,32 @@
 import express from "express";
-import { protect, isAdmin } from "../middleware/authMiddleware.js"; // Protect and isAdmin middleware
 import {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
   getUserProfile,
   updateUserProfile,
-  deleteUser,
-} from "../controllers/userController.js"; // Importing controller functions
+} from "../controllers/userController.js";
+import { protect, isAdmin } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js"; // Middleware for file upload
 
 const router = express.Router();
 
-// Protect middleware for routes that require authentication
-router.get("/profile", protect, getUserProfile); // Get user profile (only authenticated users)
-router.put("/profile", protect, updateUserProfile); // Update user profile (only authenticated users)
-router.delete("/:id", protect, isAdmin, deleteUser); // Delete user (only admins)
+// ✅ User profile routes (Authenticated users only)
+router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 
-// Exporting the router
+// ✅ CRUD operations for users
+router.get("/", protect, isAdmin, getAllUsers); // Admin-only access
+router.get("/:id", protect, getUserById);
+router.post("/", createUser);
+router.put("/:id", protect, updateUser);
+router.delete("/:id", protect, isAdmin, deleteUser);
+
+// ✅ Profile image upload (Authenticated users only)
+router.post("/upload", protect, upload.single("profileImage"), (req, res) => {
+  res.json({ imageUrl: `/uploads/${req.file.filename}` });
+});
+
 export default router;
