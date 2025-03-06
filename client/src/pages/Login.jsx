@@ -29,7 +29,7 @@ const Login = () => {
       setUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setMessage("Login successful!");
-      navigate("/posts"); // Redirect to posts after login
+      navigate("/"); // Redirect to homepage after login
     } catch (error) {
       setMessage(error.response?.data?.message || "Login failed");
     }
@@ -50,7 +50,18 @@ const Login = () => {
             <h2 className="mb-4 text-2xl font-semibold">
               Welcome, {user.name}!
             </h2>
-            <button onClick={handleLogout} className="w-full btn btn-primary">
+
+            <button
+              onClick={() => navigate("/profile")}
+              className="w-full mb-3 btn bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-blue-800"
+            >
+              Update Profile
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="w-full btn bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA]"
+            >
               Logout
             </button>
             {message && (
@@ -97,7 +108,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full btn text-white bg-[#C084FC] hover:bg-[#9333EA]"
+              className="w-full btn text-white bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA]"
             >
               Login
             </button>
@@ -108,7 +119,7 @@ const Login = () => {
               </span>
               <button
                 onClick={() => navigate("/register")}
-                className="ml-2 text-blue-500 hover:underline"
+                className="ml-2 text-blue-600 hover:underline"
               >
                 Register
               </button>

@@ -28,7 +28,7 @@ const ShoppersHeader = () => {
                 viewBox="0 0 50 50"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-purple-500"
+                className="bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700"
               >
                 {/* Ultra-modern abstract logo */}
                 <rect

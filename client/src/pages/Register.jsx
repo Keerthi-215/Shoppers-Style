@@ -88,7 +88,10 @@ const Register = () => {
           required
         />
 
-        <button type="submit" className="w-full btn btn-primary">
+        <button
+          type="submit"
+          className="w-full btn bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 btn-primary"
+        >
           Create User
         </button>
       </form>

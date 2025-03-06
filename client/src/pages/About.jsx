@@ -1,32 +1,9 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Star, ShieldCheck, Truck } from "lucide-react";
 import team1 from "../assets/images/team1.jpg";
 import team2 from "../assets/images/team2.jpg";
 import team3 from "../assets/images/team3.jpg";
-import banner1 from "../assets/images/banner1.png";
-import banner2 from "../assets/images/banner2.png";
-import banner3 from "../assets/images/banner3.jpg";
-import banner4 from "../assets/images/banner4.jpg";
-import banner5 from "../assets/images/banner5.jpg";
-import banner6 from "../assets/images/banner6.jpg";
-import banner7 from "../assets/images/banner7.png";
-import banner8 from "../assets/images/banner8.png";
-import banner9 from "../assets/images/banner9.png";
-import banner10 from "../assets/images/banner10.png";
-
-const banners = [
-  banner1,
-  banner2,
-  banner3,
-  banner4,
-  banner5,
-  banner6,
-  banner7,
-  banner8,
-  banner9,
-  banner10,
-];
+import teamPhoto from "../assets/images/team-photo.jpg"; // Add the team image here
 
 const teamMembers = [
   { name: "Jessica Parker", role: "Founder & CEO", image: team1 },
@@ -35,36 +12,19 @@ const teamMembers = [
 ];
 
 export default function AboutPage() {
-  const [currentBanner, setCurrentBanner] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 4000); // Change image every 4 seconds
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Banner Section */}
-      <div className="relative w-full h-screen overflow-hidden">
-        {banners.map((banner, index) => (
-          <img
-            key={index}
-            src={banner}
-            alt={`Banner ${index + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              index === currentBanner ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
-        <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center px-6">
-          <h2 className="text-4xl md:text-3xl  text-gray-300 font-bold">
-            About Shoppers
+      {/* Hero Section with Team Photo */}
+      <div className="relative w-full h-screen">
+        <img
+          src={teamPhoto}
+          alt="Our Team"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20 flex flex-col justify-center items-center text-center px-6">
+          <h2 className="text-4xl md:text-3xl text-white font-bold">
+            Shoppers Team
           </h2>
-          {/* <p className="mt-4 text-lg md:text-xl text-gray-300">
-            Discover style, quality, and convenience all in one place.
-          </p> */}
         </div>
       </div>
 
@@ -76,10 +36,7 @@ export default function AboutPage() {
           innovative online fashion destination dedicated to bringing you the
           latest trends at unbeatable prices. Whether you're looking for
           everyday essentials or statement pieces, we provide high-quality
-          clothing and accessories for men, women, and kids. Our commitment to
-          <strong> style, affordability, and convenience</strong> makes us the
-          perfect shopping companion. With seamless online browsing, secure
-          payments, and fast delivery, shopping has never been easier!
+          clothing and accessories for men, women, and kids.
         </p>
       </section>
 
@@ -139,7 +96,7 @@ export default function AboutPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="bg-purple-500 py-12 text-center">
+      <section className="bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 py-12 text-center">
         <h2 className="text-3xl font-bold">Shop the Latest Trends</h2>
         <p className="mt-2 text-lg">
           Find your perfect style with Shoppers today!
