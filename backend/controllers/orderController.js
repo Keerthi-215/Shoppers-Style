@@ -11,18 +11,9 @@ const getAllOrders = async (req, res) => {
 
 const createOrder = async (req, res) => {
   try {
-    const { paymentMethod, totalPrice, products } = req.body;
-
-    const order = await Order.create({
-      paymentMethod,
-      totalPrice,
-      products,
-      userId: req.user._id, // Associate the order with the logged-in user
-    });
-
-    res.status(201).json(order); // Send back the created order as response
+    const order = await Order.create(req.body);
+    res.status(201).json(order);
   } catch (error) {
-    console.error("Order creation failed:", error);
     res.status(400).json({ error: error.message });
   }
 };
