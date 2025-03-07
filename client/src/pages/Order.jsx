@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useCart } from "../components/CartContext";
 
 const Order = () => {
@@ -16,76 +17,76 @@ const Order = () => {
     if (savedShipping) setShippingDetails(JSON.parse(savedShipping));
     if (savedPayment) setPaymentMethod(savedPayment);
 
-    // Simulate order placement after payment
+    // Place Order when Shipping & Payment Data is Available
     if (savedShipping && savedPayment) {
-      setOrderPlaced(true);
-      // Clear cart and local storage after order is placed
-      clearCart();
-      localStorage.removeItem("shippingDetails");
-      localStorage.removeItem("paymentMethod");
+      placeOrder();
     }
-  }, [clearCart]);
+  }, []);
 
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const placeOrder = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      console.error("User not logged in!");
+      return;
+    }
+
+    const orderData = {
+      user: userId,
+      shippingDetails: JSON.parse(localStorage.getItem("shippingDetails")),
+      cartItems: cartItems,
+      totalPrice: cartItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      ),
+      paymentMethod: localStorage.getItem("paymentMethod") || "COD",
+      isPaid: false, // Default to unpaid
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/orders",
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        console.log("Order saved successfully:", response.data);
+        localStorage.setItem("order", JSON.stringify(response.data)); // Save order for confirmation page
+        setOrderPlaced(true);
+        clearCart();
+        localStorage.removeItem("shippingDetails");
+        localStorage.removeItem("paymentMethod");
+        navigate("/order-confirmation"); // Redirect to confirmation page
+      }
+    } catch (error) {
+      console.error(
+        "Error placing order:",
+        error.response?.data || error.message
+      );
+    }
+  };
 
   return (
     <div className="container mx-auto p-6">
       {orderPlaced ? (
         <>
-          <h1 className="text-3xl font-bold text-center">Order Confirmation</h1>
-          <div className="mt-6 text-center">
-            <p className="text-xl font-semibold">
-              Your order has been placed successfully!
+          <h1 className="text-3xl font-bold text-center">
+            Order Placed Successfully!
+          </h1>
+          <div className="text-center mt-6">
+            <p className="text-lg">
+              Thank you for your purchase. Your order has been confirmed.
             </p>
-            <div className="mt-4 border p-4 rounded">
-              <h2 className="text-xl font-bold">Order Summary</h2>
-
-              {shippingDetails && (
-                <div className="mt-4">
-                  <h3 className="font-semibold">Shipping Information</h3>
-                  <p>{shippingDetails.fullName}</p>
-                  <p>
-                    {shippingDetails.address}, {shippingDetails.city},{" "}
-                    {shippingDetails.country}, {shippingDetails.postalCode}
-                  </p>
-                  <p>{shippingDetails.phone}</p>
-                </div>
-              )}
-
-              {paymentMethod && (
-                <div className="mt-4">
-                  <h3 className="font-semibold">Payment Method</h3>
-                  <p>
-                    {paymentMethod === "creditCard" ? "Credit Card" : "PayPal"}
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-4">
-                <h3 className="font-semibold">Cart Items</h3>
-                <ul>
-                  {cartItems.map((item) => (
-                    <li key={item.id} className="flex justify-between py-2">
-                      <span>
-                        {item.name} x{item.quantity}
-                      </span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex justify-between text-lg font-semibold">
-                  <span>Total Price:</span>
-                  <span>${totalPrice.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-
             <button
               onClick={() => navigate("/")}
-              className="bg-blue-500 text-white p-2 rounded mt-6"
+              className="mt-6 bg-blue-500 text-white p-2 rounded"
             >
               Go to Homepage
             </button>
@@ -93,7 +94,7 @@ const Order = () => {
         </>
       ) : (
         <div className="text-center">
-          <p className="text-xl font-semibold">Order processing...</p>
+          <p className="text-xl font-semibold">Processing your order...</p>
         </div>
       )}
     </div>

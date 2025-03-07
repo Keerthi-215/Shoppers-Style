@@ -47,7 +47,7 @@ const Checkout = () => {
     clearCart(); // Clear the cart items from the context
 
     setOrderPlaced(true); // Mark the order as placed
-    navigate("/confirmation"); // Navigate to the Order Confirmation page
+    navigate("/order-confirmation"); // Navigate to the Order Confirmation page
   };
 
   const getTotalPrice = () => {
@@ -118,7 +118,7 @@ const Checkout = () => {
         onClick={handlePlaceOrder}
         disabled={cartItems.length === 0}
       >
-        Place Order
+        View Order
       </button>
 
       {orderPlaced && (

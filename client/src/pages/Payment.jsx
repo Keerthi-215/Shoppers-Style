@@ -6,12 +6,12 @@ const Payment = () => {
   const [isPayPalReady, setIsPayPalReady] = useState(false);
   const [orderDetails, setOrderDetails] = useState({
     shippingDetails: JSON.parse(localStorage.getItem("shippingDetails")) || {},
-    paymentMethod: "paypal", // default to PayPal
+    paymentMethod: "paypal",
     totalPrice: 100.0, // Example total price; replace with actual total from cart
   });
 
   const PAYPAL_CLIENT_ID =
-    "AaB0UeeqSCx4j1kuOcS5wc9mzr_TKTGUBwb7TKTLCdlt3MWId82Pe0D6_bUfHtu5mw6dI-FJpfh9eu9B"; // Use your actual PayPal Client ID
+    "AaB0UeeqSCx4j1kuOcS5wc9mzr_TKTGUBwb7TKTLCdlt3MWId82Pe0D6_bUfHtu5mw6dI-FJpfh9eu9B";
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -38,14 +38,14 @@ const Payment = () => {
           onApprove: function (data, actions) {
             return actions.order.capture().then(function (details) {
               alert("Payment Successful: " + details.payer.name.given_name);
-              localStorage.setItem("paymentMethod", "paypal"); // Store payment method
-              localStorage.setItem("order", JSON.stringify(orderDetails)); // Save order details
-              navigate("/checkout"); // Proceed to checkout page after payment
+              localStorage.setItem("paymentMethod", "paypal");
+              localStorage.setItem("order", JSON.stringify(orderDetails));
+              navigate("/checkout");
             });
           },
           onCancel: function () {
             alert("Payment cancelled");
-            navigate("/checkout"); // Navigate back to checkout if payment is canceled
+            navigate("/checkout");
           },
         })
         .render("#paypal-button-container");
@@ -53,29 +53,45 @@ const Payment = () => {
   }, [isPayPalReady, orderDetails, navigate]);
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center">Payment Method</h1>
-      <form className="max-w-lg mx-auto mt-6">
-        <div className="mt-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="paypal"
-              checked={orderDetails.paymentMethod === "paypal"}
-              readOnly
-              className="mr-2"
-            />
-            PayPal or Credit Card via PayPal
-          </label>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#F3E8FF] p-6">
+      <div className="card w-full max-w-lg bg-white shadow-xl p-6 rounded-lg">
+        <h1 className="text-3xl font-bold text-purple-700 text-center">
+          Payment Method
+        </h1>
 
-        {isPayPalReady && (
-          <div className="mt-6">
-            <div id="paypal-button-container"></div>
+        <form className="mt-6">
+          <div className="form-control">
+            {/* <label className="label cursor-pointer flex items-center">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="paypal"
+                checked={orderDetails.paymentMethod === "paypal"}
+                readOnly
+                className="radio radio-primary mr-2"
+              />
+              <span className="text-purple-700 font-medium text-lg tracking-wide px-4 py-2 ">
+                PayPal or Credit Card via PayPal
+              </span>
+            </label> */}
           </div>
-        )}
-      </form>
+
+          {isPayPalReady && (
+            <div className="mt-6">
+              <div id="paypal-button-container"></div>
+            </div>
+          )}
+
+          <div className="mt-6">
+            <button
+              onClick={() => navigate("/checkout")}
+              className="btn btn-outline border-purple-600 text-purple-600 w-full transition-all duration-300 ease-in-out hover:bg-purple-400 hover:text-white"
+            >
+              Back to Checkout
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

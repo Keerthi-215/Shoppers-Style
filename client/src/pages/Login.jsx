@@ -14,14 +14,14 @@ const Login = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      navigate("/"); // ✅ Redirect to homepage if already logged in
+      navigate("/login"); // ✅ Redirect to homepage if already logged in
     }
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage(""); // Reset message on new login attempt
-    //console.log("message ");
+
     try {
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
@@ -37,7 +37,7 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("userId", user._id);
 
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // ✅ Set default axios token
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         setUser(user); // Update state
         setMessage("Login successful!");
@@ -55,9 +55,9 @@ const Login = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"]; // ✅ Remove auth token from axios
+    delete axios.defaults.headers.common["Authorization"];
     setMessage("Logout successful!");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -69,6 +69,15 @@ const Login = () => {
               Welcome, {user.name}!
             </h2>
 
+            {/* Order List Button */}
+            <button
+              onClick={() => navigate("/orders")}
+              className="w-full mb-3 btn bg-gradient-to-r from-green-500 via-teal-600 to-blue-700 hover:bg-blue-800"
+            >
+              View Order List
+            </button>
+
+            {/* Update Profile Button */}
             <button
               onClick={() => navigate("/profile")}
               className="w-full mb-3 btn bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-blue-800"
@@ -76,12 +85,14 @@ const Login = () => {
               Update Profile
             </button>
 
+            {/* Logout Button */}
             <button
               onClick={handleLogout}
               className="w-full btn bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA]"
             >
               Logout
             </button>
+
             {message && (
               <div className="mt-4 shadow-lg alert alert-success">
                 {message}

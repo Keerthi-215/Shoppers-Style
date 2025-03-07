@@ -26,64 +26,105 @@ const Shipment = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center">Shipping Details</h1>
-      <form className="max-w-lg mx-auto mt-6" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="postalCode"
-          placeholder="Postal Code"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="country"
-          placeholder="Country"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone Number"
-          required
-          className="w-full p-2 border rounded mt-2"
-          onChange={handleChange}
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white w-full p-2 rounded mt-4"
-        >
-          Continue to Payment
-        </button>
-      </form>
+    <div className="min-h-screen bg-[#F3E8FF] flex items-center justify-center p-6">
+      <div className="card w-full max-w-lg bg-white shadow-xl p-6 rounded-lg">
+        <h1 className="text-3xl font-bold text-purple-700 text-center">
+          Shipping Details
+        </h1>
+
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">Full Name</span>
+            </label>
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Enter your full name"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">Address</span>
+            </label>
+            <input
+              type="text"
+              name="address"
+              placeholder="Enter your address"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">City</span>
+            </label>
+            <input
+              type="text"
+              name="city"
+              placeholder="Enter your city"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">Postal Code</span>
+            </label>
+            <input
+              type="text"
+              name="postalCode"
+              placeholder="Enter postal code"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">Country</span>
+            </label>
+            <input
+              type="text"
+              name="country"
+              placeholder="Enter your country"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-purple-600">Phone Number</span>
+            </label>
+            <input
+              type="text"
+              name="phone"
+              placeholder="Enter phone number"
+              required
+              className="input input-bordered w-full"
+              onChange={handleChange}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary bg-purple-600 hover:bg-purple-800 text-white w-full mt-4"
+          >
+            Continue to Payment
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
