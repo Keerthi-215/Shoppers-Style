@@ -59,7 +59,7 @@ const ViewProducts = () => {
         <table className="table w-full rounded-lg shadow-lg border border-gray-300 bg-gray-100">
           <thead>
             <tr className="bg-purple-700 text-white">
-              <th className="p-3">Image</th>
+              {/* <th className="p-3">Image</th> */}
               <th className="p-3">Product ID</th>
               <th className="p-3">Name</th>
               <th className="p-3">Stock</th>
@@ -71,14 +71,14 @@ const ViewProducts = () => {
             {products.length > 0 ? (
               products.map((product) => (
                 <tr key={product._id} className="hover:bg-purple-200">
-                  <td className="p-3">
+                  {/* <td className="p-3">
                     <img
                       src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${
                         product.image
                       }`}
                       className="w-16 h-16 object-cover rounded-lg border border-gray-300"
                     />
-                  </td>
+                  </td> */}
                   <td className="p-3">{product._id}</td>
                   <td className="p-3">{product.name}</td>
                   <td className="p-3">{product.stock}</td>
@@ -86,7 +86,7 @@ const ViewProducts = () => {
                   <td className="p-3 flex gap-3">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="btn bg-purple-300 hover:bg-purple-600 text-white flex items-center gap-2"
+                      className="btn bg-purple-500 hover:bg-purple-600 text-white flex items-center gap-2"
                     >
                       <Pencil className="w-4 h-4" /> Edit
                     </button>

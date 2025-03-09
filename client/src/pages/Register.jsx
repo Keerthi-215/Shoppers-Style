@@ -43,6 +43,7 @@ const Register = () => {
 
     try {
       await api.post("/register", formData);
+
       setSuccess("User created successfully! Redirecting...");
       setFormData({ name: "", email: "", password: "", address: "" });
 

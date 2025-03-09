@@ -1,73 +1,66 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-
+import React, { createContext, useContext, useState } from "react";
 // Create a context for the cart
 export const CartContext = createContext();
-
 // A custom hook to access the cart context
 export const useCart = () => {
   return useContext(CartContext);
 };
-
 // A provider component to wrap the app and provide cart data
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-
-  useEffect(() => {
-    // When the app first loads, try to load the cart from localStorage (if any)
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(storedCart);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
+  // Add product to the cart
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
+      const existingItem = prevItems.find((item) => item._id === product._id);
       if (existingItem) {
+        // If the item already exists, increase the quantity
         return prevItems.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+      } else {
+        // If it's a new item, add it with quantity 1
+        return [...prevItems, { ...product, quantity: 1 }];
       }
-      return [...prevItems, { ...product, quantity: 1 }];
     });
   };
-
+  // Remove product from the cart
   const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
   };
-
+  // Clear the cart
   const clearCart = () => {
     setCartItems([]);
-    localStorage.removeItem("cart");
   };
-
+  // Increase the quantity of an item
   const increaseQuantity = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        item._id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
-
+  // Decrease the quantity of an item
   const decreaseQuantity = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id && item.quantity > 1
+        item._id === id && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
       )
     );
   };
-
+  // Calculate total number of items in the cart
   const totalItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
-
+  // Calculate the total price of the cart items
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.quantity * item.price,
+    0
+  );
   return (
     <CartContext.Provider
       value={{
@@ -78,11 +71,11 @@ export const CartProvider = ({ children }) => {
         increaseQuantity,
         decreaseQuantity,
         totalItems,
+        totalPrice,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
-
 export default CartProvider;

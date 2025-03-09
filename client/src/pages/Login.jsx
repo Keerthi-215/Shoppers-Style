@@ -51,11 +51,16 @@ const Login = () => {
   };
 
   const handleLogout = () => {
+    // Clear user authentication data only
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
     delete axios.defaults.headers.common["Authorization"];
+
+    // Note: Not clearing order summary data from localStorage
+    // Any order-related data will be preserved
+
     setMessage("Logout successful!");
     navigate("/");
   };
@@ -71,7 +76,7 @@ const Login = () => {
 
             {/* Order List Button */}
             <button
-              onClick={() => navigate("/orders")}
+              onClick={() => navigate("/order-history")}
               className="w-full mb-3 btn bg-gradient-to-r from-green-500 via-teal-600 to-blue-700 hover:bg-blue-800"
             >
               View Order List
@@ -115,7 +120,7 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                placeholder="Enter your email address"
                 className="w-full input input-bordered"
                 required
               />

@@ -41,11 +41,11 @@ const ShoppersFooter = () => {
                   Returns & Exchanges
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/shipping" className="hover:text-purple-400">
                   Shipping Info
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 

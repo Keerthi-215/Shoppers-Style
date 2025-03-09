@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { ShoppingBag } from "lucide-react";
 
-// Import banner images from assets
+// Import banner images
 import banner1 from "../assets/images/banner1.png";
 import banner2 from "../assets/images/banner2.png";
 import banner3 from "../assets/images/banner3.jpg";
@@ -29,6 +30,11 @@ const banners = [
 
 export default function HomePage() {
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [products, setProducts] = useState({
+    men: [],
+    women: [],
+    kids: [],
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,10 +43,39 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/products`
+      );
+      if (response.data && Array.isArray(response.data.data)) {
+        const productsData = response.data.data;
+
+        setProducts({
+          men: productsData
+            .filter((product) => product.category === "Men")
+            .slice(0, 4),
+          women: productsData
+            .filter((product) => product.category === "Women")
+            .slice(0, 4),
+          kids: productsData
+            .filter((product) => product.category === "Kids")
+            .slice(0, 4),
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#F9F5FF] text-white">
+    <div className="max-screen bg-[#F9F5FF]">
       {/* Banner Section */}
-      <div className="relative w-full h-screen overflow-hidden">
+      <div className="relative w-full h-[700px] overflow-hidden">
         {banners.map((banner, index) => (
           <img
             key={index}
@@ -51,65 +86,75 @@ export default function HomePage() {
             }`}
           />
         ))}
-        {/* Brighter Gradient Overlay */}
-        <div className="py-16 px-6 max-w-4xl mx-auto text-center">
-          {/* <h1 className="text-4xl md:text-6xl font-extrabold tracking-wide text-white drop-shadow-lg">
+        {/* Banner Overlay */}
+        {/* <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center text-white px-4">
+          <h1 className="text-3xl md:text-5xl font-bold drop-shadow-lg">
             Elevate Your Style
           </h1>
-          <p className="mt-4 text-xl md:text-2xl text-white/90 max-w-3xl drop-shadow-md">
-            Discover the latest trends and refresh your wardrobe with our
-            premium collection.
+          <p className="mt-2 text-lg md:text-xl">
+            Discover premium collections & latest fashion trends.
           </p>
           <Link
             to="/collections"
-            className="mt-6 px-8 py-4 bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold rounded-full flex items-center gap-2 shadow-xl transition-all transform hover:scale-105"
+            className="mt-4 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold rounded-full flex items-center gap-2 shadow-lg transition-all transform hover:scale-105"
           >
             <ShoppingBag className="h-6 w-6" />
             Shop Now
-          </Link> */}
-        </div>
+          </Link>
+        </div> */}
       </div>
 
-      {/* Featured Categories */}
-      <section className="py-16 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-8">
-          Trending Categories
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-15">
-          {[
-            {
-              path: "/collections/men",
-              image: "../assets/men-fashion.jpg",
-              label: "Men's Fashion",
-            },
-            {
-              path: "/collections/women",
-              image: "../assets/women-fashion.jpg",
-              label: "Women's Fashion",
-            },
-            {
-              path: "/collections/kids",
-              image: "../assets/kids-fashion.jpg",
-              label: "Kids' Fashion",
-            },
-          ].map((category, index) => (
-            <Link
-              key={index}
-              to={category.path}
-              className="group relative block overflow-hidden rounded-lg shadow-md"
-            >
-              <img
-                src={category.image}
-                alt={category.label}
-                className="w-full h-72 object-cover transition-transform duration-300 group-hover:scale-105 brightness-110"
-              />
-              <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white text-xl font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {category.label}
+      {/* Category Sections */}
+      <div className="py-16 px-6 max-w-4xl mx-auto">
+        {["men", "women", "kids"].map((category) => (
+          <section key={category} className="mb-12">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold text-purple-900 capitalize">
+                {category} Collection
+              </h2>
+              <Link
+                to={`/collections/${category}`}
+                className="text-purple-600 hover:underline font-semibold"
+              >
+                View All
+              </Link>
+            </div>
+
+            {products[category].length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                {products[category].map((product) => (
+                  <Link
+                    key={product._id}
+                    to={`/product/${product._id}`}
+                    className="group block overflow-hidden rounded-lg shadow-md bg-white transition-transform transform hover:scale-105 hover:shadow-xl"
+                  >
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-full h-45 object-cover rounded-t-lg"
+                    />
+                    <div className="p-4 text-gray-800 text-center">
+                      <h3 className="text-lg font-semibold truncate">
+                        {product.name}
+                      </h3>
+                      <p className="text-purple-600 font-medium text-lg">
+                        ${product.price}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {product.subcategory}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+            ) : (
+              <p className="text-center text-gray-600">
+                No {category} products available.
+              </p>
+            )}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,153 +1,153 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useCart } from "../components/CartContext"; // Import the useCart hook
-import ToastNotification from "../components/ToastNotification"; // Import ToastNotification component
-
+import { useCart } from "../components/CartContext";
+import { useWishlist } from "../components/WishlistContext";
+import ToastNotification from "../components/ToastNotification";
+// import Reviews from "../pages/Reviews";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 function ProductDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { wishlist, addToWishlist } = useWishlist();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [selectedSize, setSelectedSize] = useState("");
+  const [showCartToast, setShowCartToast] = useState(false); // State for Cart Toast
+  const [showWishlistToast, setShowWishlistToast] = useState(false); // State for Wishlist Toast
+  const [selectedSize, setSelectedSize] = useState(""); // State for size selection
 
-  const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"]; // Predefined sizes
+  // Available sizes
+  const sizes = ["S", "M", "L", "XL", "XXL"];
 
   useEffect(() => {
+    if (!id) {
+      setError("Product ID is missing or invalid");
+      setLoading(false);
+      return;
+    }
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/products/${id}`);
         setProduct(response.data.data);
       } catch (err) {
         setError("Failed to load product details");
-        console.error("Error fetching product:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProductDetails();
   }, [id]);
-
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      alert("Please select a size before adding to cart!");
-      return;
-    }
-
     if (product) {
-      addToCart({ ...product, selectedSize });
-      setShowToast(true);
+      // Add product with selected size if available
+      const productWithSize = selectedSize
+        ? { ...product, selectedSize }
+        : product;
+      addToCart(productWithSize);
+      setShowCartToast(true); // Show Cart Toast
+    }
+  };
+  const handleAddToWishlist = () => {
+    if (product) {
+      // Add product with selected size if available
+      const productWithSize = selectedSize
+        ? { ...product, selectedSize }
+        : product;
+      addToWishlist(productWithSize);
+      setShowWishlistToast(true); // Show Wishlist Toast
     }
   };
 
-  const handleBuyNow = () => {
-    if (!selectedSize) {
-      alert("Please select a size before proceeding!");
-      return;
-    }
-
-    const orderDetails = {
-      productId: product._id,
-      name: product.name,
-      price: product.price,
-      size: selectedSize,
-    };
-
-    localStorage.setItem("orderDetails", JSON.stringify(orderDetails)); // Store order details
-    navigate("/shipment"); // Redirect to Payment Page
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
   };
 
-  if (loading)
-    return (
-      <p className="text-center text-gray-500">Loading product details...</p>
-    );
-  if (error) return <p className="text-center text-red-500">{error}</p>;
-
+  const isProductInWishlist = wishlist.some(
+    (item) => item._id === product?._id
+  );
+  if (loading) return <p>Loading product details...</p>;
+  if (error) return <p>{error}</p>;
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Product Image */}
         <div className="flex-1">
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="w-full h-90 object-cover rounded-md shadow-md"
+            className="w-full h-85 object-cover rounded-md"
           />
         </div>
-
-        {/* Product Details */}
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-purple-700">{product.name}</h1>
-          <p className="text-purple-600 mt-2 text-lg font-medium">
-            ${product.price}
-          </p>
-
+          <h1 className="text-3xl font-bold">{product.name}</h1>
+          <p className="text-gray-600 mt-2">${product.price}</p>
           <div className="mt-4">
             <h3 className="font-semibold">Product Description:</h3>
             <p>{product.description}</p>
           </div>
-
-          <div className="mt-4">
-            <h3 className="font-semibold">Category:</h3>
-            <p>{product.category}</p>
-          </div>
-
-          {/* Size Selection */}
-          <div className="mt-4">
-            <h3 className="font-semibold">Select Size:</h3>
-            <select
-              className="mt-2 block w-full p-2 border border-purple-300 rounded-md focus:ring focus:ring-purple-200"
-              value={selectedSize}
-              onChange={(e) => setSelectedSize(e.target.value)}
-            >
-              <option value="">Choose a size</option>
-              {availableSizes.map((size, index) => (
-                <option key={index} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-
           <div className="mt-4">
             <h3 className="font-semibold">Stock:</h3>
             <p>{product.stock} items available</p>
           </div>
 
-          {/* Buttons: Add to Cart & Buy Now */}
-          <div className="mt-6 flex gap-4">
+          {/* Size Selection */}
+          <div className="mt-4">
+            <h3 className="font-semibold">Select Size:</h3>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {sizes.map((size) => (
+                <label key={size} className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedSize === size}
+                    onChange={() => handleSizeChange(size)}
+                    className="mr-1"
+                  />
+                  <span className="text-sm">{size}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
             <button
               onClick={handleAddToCart}
-              className="w-40 bg-purple-600 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md"
             >
               Add to Cart
             </button>
-
+          </div>
+          <div className="mt-4">
             <button
-              onClick={handleBuyNow}
-              className="w-40 bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300"
+              onClick={handleAddToWishlist}
+              className={`${
+                isProductInWishlist ? "bg-red-500" : "bg-yellow-500"
+              } text-white py-2 px-4 rounded-md`}
+              disabled={isProductInWishlist}
             >
-              Buy Now
+              {isProductInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
             </button>
           </div>
         </div>
       </div>
-
-      {/* Show Toast Notification when a product is added */}
-      {showToast && (
+      {/* Show Toast for Cart */}
+      {showCartToast && (
         <ToastNotification
           message="Your product has been added to the cart!"
-          onClose={() => setShowToast(false)}
+          onClose={() => setShowCartToast(false)}
         />
       )}
+      {/* Show Toast for Wishlist */}
+      {showWishlistToast && (
+        <ToastNotification
+          message="Your product has been added to the wishlist!"
+          onClose={() => setShowWishlistToast(false)}
+        />
+      )}
+      {/* Reviews Section */}
+      {/* <div className="mt-8">
+        <Reviews productId={id} />
+      </div> */}
     </div>
   );
 }
-
 export default ProductDetails;

@@ -84,10 +84,10 @@ const Payment = () => {
 
           <div className="mt-6">
             <button
-              onClick={() => navigate("/checkout")}
+              onClick={() => navigate("/")}
               className="btn btn-outline border-purple-600 text-purple-600 w-full transition-all duration-300 ease-in-out hover:bg-purple-400 hover:text-white"
             >
-              Back to Checkout
+              Back
             </button>
           </div>
         </form>

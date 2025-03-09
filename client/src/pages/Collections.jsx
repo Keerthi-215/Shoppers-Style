@@ -8,32 +8,46 @@ function Collections() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showScroll, setShowScroll] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/products`);
-        if (response.data && Array.isArray(response.data.data)) {
-          setProducts(response.data.data);
-        } else {
-          setError("Unexpected response format");
-        }
-      } catch (err) {
-        setError("Failed to load products");
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/products`);
+      if (response.data && Array.isArray(response.data.data)) {
+        setProducts(response.data.data);
+      } else {
+        setError("Unexpected response format");
+      }
+    } catch (err) {
+      setError("Failed to load products");
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScroll(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-[#F3E8FF] p-8">
-      <h1 className="text-4xl font-bold text-purple-700 text-center mb-8">
+      <h3 className="text-4xl font-bold text-purple-700 text-center mb-8">
         ✨ Our Collections ✨
-      </h1>
+      </h3>
 
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -56,24 +70,38 @@ function Collections() {
             <Link
               to={`/product/${product._id}`}
               key={product._id}
-              className="card bg-white shadow-xl border border-purple-300 rounded-lg transition-transform duration-300 transform hover:scale-105 hover:shadow-2xl"
+              className="card bg-white shadow-lg border border-gray-200 rounded-xl overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:shadow-xl"
             >
-              <figure className="bg-purple-100 p-4 rounded-t-lg">
+              <figure className="relative w-full h-48 bg-gray-100">
                 <img
                   src={product.imageUrl}
                   alt={product.name}
-                  className="w-full h-48 object-contain rounded-md"
+                  className="w-auto h-full object-cover rounded-t-xl"
                 />
               </figure>
-              <div className="card-body">
-                <h2 className="card-title text-purple-800">{product.name}</h2>
-                <p className="text-purple-600 text-lg font-medium">
+              <div className="p-4">
+                <h3 className="text-gray-900 font-semibold text-m line-clamp-1">
+                  {product.name}
+                </h3>
+                <p className="text-gray-600 text-sm font-medium mt-1">
                   ${product.price}
                 </p>
+                <div className="mt-2 text-xs text-purple-700 font-medium bg-purple-100 px-2 py-1 rounded-md inline-block">
+                  Free Delivery
+                </div>
               </div>
             </Link>
           ))}
       </div>
+
+      {showScroll && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-purple-700 text-white p-3 rounded-full shadow-lg hover:bg-purple-800 transition"
+        >
+          ↑
+        </button>
+      )}
     </div>
   );
 }

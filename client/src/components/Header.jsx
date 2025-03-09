@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   User,
@@ -16,8 +16,13 @@ const ShoppersHeader = () => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || {}
   );
+  const { totalItems } = useCart();
+  const navigate = useNavigate();
 
-  const { totalItems } = useCart(); // Access the totalItems from CartContext
+  // Function to navigate to Collections Page with a search query
+  const handleSearchClick = () => {
+    navigate("/collections?search=");
+  };
 
   return (
     <header className="w-full bg-gray-900 shadow-md">
@@ -119,9 +124,14 @@ const ShoppersHeader = () => {
           </nav>
           {/* Icons */}
           <div className="flex items-center space-x-6">
-            <button className="text-gray-300 hover:text-purple-400">
+            {/* 🔍 Search Icon Redirects to Collections Page */}
+            <button
+              onClick={handleSearchClick}
+              className="text-gray-300 hover:text-purple-400"
+            >
               <Search className="h-5 w-5" />
             </button>
+
             <Link to="/login" className="text-gray-300 hover:text-purple-400">
               <User className="h-5 w-5" />
             </Link>
