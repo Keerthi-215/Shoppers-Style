@@ -4,26 +4,26 @@ import {
   Search,
   User,
   ShoppingCart,
+  Heart,
   Home,
   Grid,
   Info,
   Phone,
   ShieldCheck,
 } from "lucide-react";
-import { useCart } from "../components/CartContext"; // Import the useCart hook
-
+import { useCart } from "../components/CartContext";
+import { useWishlist } from "../components/WishlistContext"; // Import wishlist context
 const ShoppersHeader = () => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || {}
   );
   const { totalItems } = useCart();
+  const { wishlist } = useWishlist(); // Get wishlist data
   const navigate = useNavigate();
-
   // Function to navigate to Collections Page with a search query
   const handleSearchClick = () => {
     navigate("/collections?search=");
   };
-
   return (
     <header className="w-full bg-gray-900 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,7 +39,6 @@ const ShoppersHeader = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 className="bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700"
               >
-                {/* Ultra-modern abstract logo */}
                 <rect
                   x="10"
                   y="20"
@@ -124,23 +123,34 @@ const ShoppersHeader = () => {
           </nav>
           {/* Icons */}
           <div className="flex items-center space-x-6">
-            {/* 🔍 Search Icon Redirects to Collections Page */}
+            {/* Search Icon Redirects to Collections Page */}
             <button
               onClick={handleSearchClick}
               className="text-gray-300 hover:text-purple-400"
             >
               <Search className="h-5 w-5" />
             </button>
-
             <Link to="/login" className="text-gray-300 hover:text-purple-400">
               <User className="h-5 w-5" />
             </Link>
+            {/* Wishlist Icon with Count */}
+            <Link
+              to="/wishlist"
+              className="relative text-gray-300 hover:text-purple-400"
+            >
+              <Heart className="h-5 w-5" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlist.length}
+                </span>
+              )}
+            </Link>
+            {/* Cart Icon with Count */}
             <Link
               to="/cart"
               className="relative text-gray-300 hover:text-purple-400"
             >
               <ShoppingCart className="h-5 w-5" />
-              {/* Show the cart count if there are items in the cart */}
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {totalItems}
@@ -174,5 +184,4 @@ const ShoppersHeader = () => {
     </header>
   );
 };
-
 export default ShoppersHeader;

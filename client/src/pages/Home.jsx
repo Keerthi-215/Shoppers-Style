@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { ShoppingBag } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 // Import banner images
 import banner1 from "../assets/images/banner1.png";
@@ -35,6 +35,7 @@ export default function HomePage() {
     women: [],
     kids: [],
   });
+  const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,6 +71,21 @@ export default function HomePage() {
     } catch (error) {
       console.error("Failed to fetch products:", error);
     }
+  };
+
+  const handleWhatsAppClick = () => {
+    // Replace with your actual WhatsApp number and message
+    const phoneNumber = "+917794806897";
+    const message = "Hello! I'm interested in your products.";
+
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(message);
+
+    // Create WhatsApp URL
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -154,6 +170,27 @@ export default function HomePage() {
             )}
           </section>
         ))}
+      </div>
+
+      {/* WhatsApp Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <div className="relative">
+          <button
+            onClick={handleWhatsAppClick}
+            onMouseEnter={() => setShowWhatsAppTooltip(true)}
+            onMouseLeave={() => setShowWhatsAppTooltip(false)}
+            className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all transform hover:scale-110 flex items-center justify-center"
+            aria-label="Contact us on WhatsApp"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </button>
+
+          {showWhatsAppTooltip && (
+            <div className="absolute bottom-full right-0 mb-2 bg-white text-gray-800 px-3 py-1 rounded shadow-md whitespace-nowrap">
+              Chat with us on WhatsApp
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

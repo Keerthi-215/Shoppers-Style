@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 const CreateProduct = ({ api }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -10,12 +9,20 @@ const CreateProduct = ({ api }) => {
   const [stock, setStock] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
+  const [productType, setProductType] = useState("Adult"); // New state for product type
   const [selectedSizes, setSelectedSizes] = useState([]);
-
   const fileInputRef = useRef(null);
-  const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
   const navigate = useNavigate();
-
+  // Adult and Kids size options
+  const adultSizes = ["S", "M", "L", "XL", "XXL"];
+  const kidsSizes = [
+    "0-2 years",
+    "2-4 years",
+    "4-6 years",
+    "6-8 years",
+    "8-10 years",
+    "10-12 years",
+  ];
   const handleImageUploadClick = () => fileInputRef.current.click();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -24,7 +31,6 @@ const CreateProduct = ({ api }) => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
-
   const handleSizeChange = (size) => {
     setSelectedSizes((prevSizes) =>
       prevSizes.includes(size)
@@ -32,7 +38,6 @@ const CreateProduct = ({ api }) => {
         : [...prevSizes, size]
     );
   };
-
   const handleProductUpload = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -43,10 +48,10 @@ const CreateProduct = ({ api }) => {
     formData.append("stock", stock);
     formData.append("category", category);
     formData.append("subcategory", subcategory);
+    formData.append("productType", productType);
     formData.append("sizes", JSON.stringify(selectedSizes));
-
     try {
-      const res = await api.post("/api/products", formData, {
+      const res = await api.post("/products", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (res) alert("Product created successfully");
@@ -54,15 +59,12 @@ const CreateProduct = ({ api }) => {
       console.log(error);
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#F3E8FF] to-[#EDE9FE] p-4">
       <div className="card w-full max-w-lg bg-white shadow-xl p-6 rounded-xl">
-        {/* Back Button */}
         <h2 className="text-2xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#9333EA] to-[#A855F7] mt-2">
           Create Product
         </h2>
-
         <form onSubmit={handleProductUpload} className="space-y-3 mt-3">
           <input
             type="text"
@@ -103,20 +105,33 @@ const CreateProduct = ({ api }) => {
               onChange={(e) => setSubcategory(e.target.value)}
             />
           </div>
-
-          {/* Multi-Select Size Dropdown */}
+          {/* Product Type Selection (Adult / Kids) */}
+          <div className="mt-3">
+            <label className="font-semibold">Product Type:</label>
+            <select
+              className="select select-bordered select-sm w-full mt-1"
+              onChange={(e) => {
+                setProductType(e.target.value);
+                setSelectedSizes([]); // Reset sizes on type change
+              }}
+            >
+              <option value="Adult">Adult</option>
+              <option value="Kids">Kids</option>
+            </select>
+          </div>
+          {/* Multi-Select Sizes or Age Groups */}
           <div className="dropdown">
             <label
               tabIndex={0}
               className="btn btn-sm bg-[#C084FC] text-white hover:bg-[#9333EA] w-full"
             >
-              Select Sizes
+              Select {productType === "Kids" ? "Age Group" : "Sizes"}
             </label>
             <ul
               tabIndex={0}
               className="dropdown-content menu p-1 shadow bg-white rounded-box w-48"
             >
-              {availableSizes.map((size) => (
+              {(productType === "Kids" ? kidsSizes : adultSizes).map((size) => (
                 <li key={size}>
                   <label className="flex items-center gap-2 text-sm">
                     <input
@@ -131,8 +146,7 @@ const CreateProduct = ({ api }) => {
               ))}
             </ul>
           </div>
-
-          {/* Display Selected Sizes */}
+          {/* Display Selected Sizes / Age Groups */}
           {selectedSizes.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-1">
               {selectedSizes.map((size) => (
@@ -145,7 +159,6 @@ const CreateProduct = ({ api }) => {
               ))}
             </div>
           )}
-
           {/* Image Upload */}
           <button
             type="button"
@@ -161,7 +174,6 @@ const CreateProduct = ({ api }) => {
             onChange={handleImageChange}
             className="hidden"
           />
-
           {/* Image Preview */}
           {imagePreview && (
             <div className="flex justify-center mt-3">
@@ -172,18 +184,16 @@ const CreateProduct = ({ api }) => {
               />
             </div>
           )}
-
           {/* Submit Button */}
-          <button className="btn btn-sm w-full text-white bg-[#8768a3] hover:bg-[#7E22CE]">
+          <button className="btn btn-sm w-full text-white bg-[#8768A3] hover:bg-[#7E22CE]">
             Upload Product
           </button>
         </form>
-
         {/* Admin Button */}
         <div className="text-center mt-3">
           <Link
             to="/admin"
-            className="btn btn-sm text-white bg-[#975a68] hover:bg-[#BE123C]"
+            className="btn btn-sm text-white bg-[#975A68] hover:bg-[#BE123C]"
           >
             Go to Admin
           </Link>
@@ -192,5 +202,4 @@ const CreateProduct = ({ api }) => {
     </div>
   );
 };
-
 export default CreateProduct;

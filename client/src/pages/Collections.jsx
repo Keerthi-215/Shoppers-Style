@@ -1,106 +1,135 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 function Collections() {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showScroll, setShowScroll] = useState(false);
-
+  // Filter states
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [subCategoryFilter, setSubCategoryFilter] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/products`);
+        if (response.data && Array.isArray(response.data.data)) {
+          setProducts(response.data.data);
+          setFilteredProducts(response.data.data); // Initially, show all products
+        } else {
+          setError("Unexpected response format");
+        }
+      } catch (err) {
+        setError("Failed to load products");
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProducts();
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/products`);
-      if (response.data && Array.isArray(response.data.data)) {
-        setProducts(response.data.data);
-      } else {
-        setError("Unexpected response format");
-      }
-    } catch (err) {
-      setError("Failed to load products");
-      console.error("Error fetching products:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Function to filter products
   useEffect(() => {
-    const handleScroll = () => {
-      setShowScroll(window.scrollY > 300);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+    if (products.length === 0) return;
+    let filtered = [...products];
+    // Apply category filter
+    if (categoryFilter) {
+      filtered = filtered.filter(
+        (product) =>
+          product.category?.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    }
+    // Apply sub-category filter
+    if (subCategoryFilter) {
+      filtered = filtered.filter(
+        (product) =>
+          product.subcategory?.toLowerCase() === subCategoryFilter.toLowerCase()
+      );
+    }
+    // Apply price filter
+    if (priceFilter === "lowToHigh") {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (priceFilter === "highToLow") {
+      filtered.sort((a, b) => b.price - a.price);
+    }
+    setFilteredProducts(filtered);
+  }, [categoryFilter, subCategoryFilter, priceFilter, products]);
   return (
-    <div className="min-h-screen bg-[#F3E8FF] p-8">
-      <h3 className="text-4xl font-bold text-purple-700 text-center mb-8">
-        ✨ Our Collections ✨
-      </h3>
-
-      {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array(8)
-            .fill(0)
-            .map((_, index) => (
-              <div
-                key={index}
-                className="skeleton h-64 w-full rounded-lg"
-              ></div>
-            ))}
-        </div>
-      )}
-
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Collections</h1>
+      {loading && <p className="text-center text-gray-500">Loading...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {Array.isArray(products) &&
-          products.map((product) => (
-            <Link
-              to={`/product/${product._id}`}
-              key={product._id}
-              className="card bg-white shadow-lg border border-gray-200 rounded-xl overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:shadow-xl"
+      {/* Filters */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Filters</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Category Filter */}
+          <div>
+            <label className="block font-semibold mb-2">Category</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full p-2 border rounded"
             >
-              <figure className="relative w-full h-48 bg-gray-100">
+              <option value="">All</option>
+              <option value="Women">Women</option>
+              <option value="Men">Men</option>
+              <option value="Kids">Kids</option>
+            </select>
+          </div>
+          {/* Sub-category Filter */}
+          <div>
+            <label className="block font-semibold mb-2">Sub-Category</label>
+            <select
+              value={subCategoryFilter}
+              onChange={(e) => setSubCategoryFilter(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">All</option>
+              <option value="Casual Wear">Casual Wear</option>
+              <option value="Luxury">Luxury</option>
+              <option value="Western">Western</option>
+              <option value="Indian wear">Indian wear</option>
+            </select>
+          </div>
+          {/* Price Filter */}
+          <div>
+            <label className="block font-semibold mb-2">Price</label>
+            <select
+              value={priceFilter}
+              onChange={(e) => setPriceFilter(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">All</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      {/* Product Grid */}
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <div key={product._id} className="border p-4 rounded-lg shadow">
+              <Link to={`/product/${product._id}`}>
                 <img
                   src={product.imageUrl}
                   alt={product.name}
-                  className="w-auto h-full object-cover rounded-t-xl"
+                  className="w-full h-40 object-cover rounded-md"
                 />
-              </figure>
-              <div className="p-4">
-                <h3 className="text-gray-900 font-semibold text-m line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm font-medium mt-1">
-                  ${product.price}
-                </p>
-              </div>
-            </Link>
+                <h2 className="mt-2 font-semibold">{product.name}</h2>
+                <p className="text-gray-600">${product.price}</p>
+              </Link>
+            </div>
           ))}
-      </div>
-
-      {showScroll && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 bg-purple-700 text-white p-3 rounded-full shadow-lg hover:bg-purple-800 transition"
-        >
-          ↑
-        </button>
+        </div>
+      ) : (
+        <p className="text-center text-gray-500">No products found.</p>
       )}
     </div>
   );
 }
-
 export default Collections;

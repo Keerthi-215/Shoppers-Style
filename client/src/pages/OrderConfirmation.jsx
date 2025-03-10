@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../components/CartContext";
 
@@ -24,7 +25,9 @@ const OrderConfirmation = () => {
         !savedOrder.cartItems ||
         savedOrder.cartItems.length === 0
       ) {
-        navigate("/");
+        setTimeout(() => navigate("/order-confirmation"), 2000);
+
+        //navigate("/");
         return;
       }
 
@@ -56,33 +59,20 @@ const OrderConfirmation = () => {
           setIsLoading(true);
           const orderData = formatOrderForDB();
 
-          console.log("Sending order to API:", orderData);
-          console.log("API Path:", API_PATH);
+          const token = localStorage.getItem("token");
+          console.log(token);
 
-          const response = await fetch(API_PATH, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              // Include auth token if required
-              ...(localStorage.getItem("token") && {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              }),
-            },
-            body: JSON.stringify(orderData),
-            credentials: "include", // Include cookies if using sessions
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(
-              errorData.error ||
-                `Server responded with status: ${response.status}`
-            );
-          }
-
-          const data = await response.json();
-          console.log("Order saved successfully:", data);
-
+          const res = await axios.post(
+            "http://localhost:5000/api/orders",
+            orderData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                ...(token && { authorization: `Bearer ${token}` }),
+              },
+            }
+          );
+          const data = res?.data;
           // Update the order in localStorage with the MongoDB _id
           const updatedOrder = {
             ...savedOrder,
@@ -97,6 +87,8 @@ const OrderConfirmation = () => {
 
           // Clear the cart after successful order placement
           clearCart();
+          localStorage.removeItem("order");
+          // const savedOrder = JSON.parse(localStorage.getItem("order"));
         } catch (err) {
           console.error("Error saving order to database:", err);
           setError(err.message);
@@ -104,8 +96,9 @@ const OrderConfirmation = () => {
           setIsLoading(false);
         }
       };
-
-      saveOrderToDatabase();
+      if (localStorage.getItem("order")) {
+        saveOrderToDatabase();
+      }
     } catch (err) {
       console.error("Error parsing order from localStorage:", err);
       setError("Failed to load order information");

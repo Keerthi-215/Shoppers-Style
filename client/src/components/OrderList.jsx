@@ -24,12 +24,16 @@ function OrderList() {
         setOrders(response.data);
         const initialStatuses = {};
         response.data.forEach((order) => {
-          initialStatuses[order._id] = order.status;
+          initialStatuses[order?._id] = order.status;
         });
         setSelectedStatuses(initialStatuses);
+
+        console.log(initialStatuses);
+        setLoading(false);
       } else {
         setError("Unexpected response format");
         console.error("Unexpected response structure:", response.data);
+        setLoading(false);
       }
     } catch (err) {
       setError("Failed to load orders: " + (err.message || "Unknown error"));
@@ -52,17 +56,29 @@ function OrderList() {
         `Updating order ${orderId} with status: ${selectedStatuses[orderId]}`
       );
 
-      // Make sure we're using the correct property name (_id not _Id)
-      const response = await axios.put(`${API_BASE_URL}/orders/${orderId}`, {
-        status: selectedStatuses[orderId],
-      });
+      // Make sure we're using the correct property name ?(_id not? _Id)
+      // const response = await axios.put(`${API_BASE_URL}/orders/${orderId}`, {
+      //   status: selectedStatuses[orderId],
+      // });
+      const response = await axios.put(
+        `${API_BASE_URL}/orders/${orderId}`,
+        // { text: prompt, image },
+        // here should your data go
+        { status: selectedStatuses[orderId] },
 
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log("Update response:", response.data);
 
       // Update the local state with the new status
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order._id === orderId
+          order?._id === orderId
             ? { ...order, status: selectedStatuses[orderId] }
             : order
         )
@@ -92,14 +108,14 @@ function OrderList() {
     try {
       console.log(`Deleting order ${orderId}`);
 
-      // Make sure we're using the correct property name (_id not _Id)
+      // Make sure we're using the correct property name ?(_id not? _Id)
       const response = await axios.delete(`${API_BASE_URL}/orders/${orderId}`);
 
       console.log("Delete response:", response.data);
 
       // Remove the order from state
       setOrders((prevOrders) =>
-        prevOrders.filter((order) => order._id !== orderId)
+        prevOrders.filter((order) => order?._id !== orderId)
       );
       setDeleteConfirm(null);
 
@@ -142,8 +158,8 @@ function OrderList() {
 
     if (typeof productItem.productId === "string") {
       return productItem.productId;
-    } else if (productItem.productId._id) {
-      return productItem.productId._id;
+    } else if (productItem.productId?._id) {
+      return productItem.productId?._id;
     } else if (typeof productItem.productId === "object") {
       // This handles ObjectId case
       return productItem.productId.toString
@@ -211,13 +227,13 @@ function OrderList() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders.map((order, index) => (
                 <tr
-                  key={order._id}
+                  key={index}
                   className="text-center border-b hover:bg-gray-100"
                 >
-                  <td className="p-3 border">{order._id}</td>
-                  <td className="p-3 border">{order.userId || "N/A"}</td>
+                  <td className="p-3 border">{order?._id}</td>
+                  <td className="p-3 border">{order?.userId._id || "N/A"}</td>
                   <td className="p-3 border">{formatDate(order.createdAt)}</td>
                   <td className="p-3 border">
                     {formatPrice(order.totalPrice)}
@@ -234,7 +250,7 @@ function OrderList() {
                           </thead>
                           <tbody>
                             {order.products.map((product, idx) => (
-                              <tr key={product._id || `product-${idx}`}>
+                              <tr key={product?._id || `product-${idx}`}>
                                 <td className="p-1 border-t">
                                   {safeDisplayId(product)}
                                 </td>
@@ -253,9 +269,9 @@ function OrderList() {
                   <td className="p-3 border">
                     <select
                       className="p-2 border rounded-md bg-gray-100"
-                      value={selectedStatuses[order._id] || order.status}
+                      value={selectedStatuses[order?._id] || order.status}
                       onChange={(e) =>
-                        handleStatusChange(order._id, e.target.value)
+                        handleStatusChange(order?._id, e.target.value)
                       }
                     >
                       <option value="pending">Pending</option>
@@ -268,19 +284,19 @@ function OrderList() {
                   <td className="p-3 border">
                     <div className="flex flex-col space-y-2">
                       <button
-                        onClick={() => updateOrderStatus(order._id)}
+                        onClick={() => updateOrderStatus(order?._id)}
                         className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
                       >
                         Update
                       </button>
 
-                      {deleteConfirm === order._id ? (
+                      {deleteConfirm === order?._id ? (
                         <div className="mt-2 flex flex-col space-y-2">
                           <p className="text-sm text-red-600 font-semibold">
                             Confirm delete?
                           </p>
                           <button
-                            onClick={() => deleteOrder(order._id)}
+                            onClick={() => deleteOrder(order?._id)}
                             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                           >
                             Yes, Delete
@@ -294,7 +310,7 @@ function OrderList() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => confirmDeleteOrder(order._id)}
+                          onClick={() => confirmDeleteOrder(order?._id)}
                           className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                         >
                           Delete

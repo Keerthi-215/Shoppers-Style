@@ -14,7 +14,15 @@ const Checkout = () => {
     } else {
       navigate("/shipment"); // Redirect to shipment if shipping details are missing
     }
-  }, [navigate]);
+  }, []);
+  // useEffect(() => {
+  //   const savedShipping = localStorage.getItem("shippingDetails");
+  //   if (savedShipping) {
+  //     setShippingDetails(JSON.parse(savedShipping)); // Set shipping details from localStorage
+  //   } else {
+  //     navigate("/shipment"); // Redirect to shipment if shipping details are missing
+  //   }
+  // }, [navigate]);
   useEffect(() => {
     if (shippingDetails && !orderPlaced) {
       const savedPayment = localStorage.getItem("paymentMethod");
@@ -40,6 +48,7 @@ const Checkout = () => {
       cartItems,
       totalPrice: getTotalPrice(),
     };
+    //console.log(orderDetails);
     // Save the order details to localStorage
     localStorage.setItem("order", JSON.stringify(orderDetails));
     // Clear cart and other data
