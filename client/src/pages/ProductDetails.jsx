@@ -4,7 +4,7 @@ import axios from "axios";
 import { useCart } from "../components/CartContext";
 import { useWishlist } from "../components/WishlistContext";
 import ToastNotification from "../components/ToastNotification";
-// import Reviews from "../pages/Reviews";
+import Reviews from "../pages/Reviews";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function ProductDetails() {
   const { id } = useParams();
@@ -184,10 +184,10 @@ function ProductDetails() {
           onClose={() => setShowWishlistToast(false)}
         />
       )}
-      {/* Reviews Section */}
-      {/* <div className="mt-8">
+      Reviews Section
+      <div className="mt-8">
         <Reviews productId={id} />
-      </div> */}
+      </div>
     </div>
   );
 }
