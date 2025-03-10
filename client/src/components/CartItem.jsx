@@ -1,6 +1,4 @@
-// src/components/CartItem.js
 import React from "react";
-
 const CartItem = ({
   item,
   increaseQuantity,
@@ -21,23 +19,22 @@ const CartItem = ({
           <p className="text-sm text-gray-600">Price: ${item.price}</p>
         </div>
       </div>
-
       <div className="flex items-center space-x-4">
         <button
-          onClick={() => decreaseQuantity(item.id)}
+          onClick={() => decreaseQuantity(item._id)} // Use _id for consistency
           className="px-2 py-1 bg-gray-300 rounded-full"
         >
           -
         </button>
         <span>{item.quantity}</span>
         <button
-          onClick={() => increaseQuantity(item.id)}
+          onClick={() => increaseQuantity(item._id)} // Use _id for consistency
           className="px-2 py-1 bg-gray-300 rounded-full"
         >
           +
         </button>
         <button
-          onClick={() => removeFromCart(item.id)}
+          onClick={() => removeFromCart(item._id)} // Use _id for consistency
           className="ml-4 px-4 py-2 bg-red-500 text-white rounded-full"
         >
           Remove
@@ -46,5 +43,4 @@ const CartItem = ({
     </div>
   );
 };
-
 export default CartItem;

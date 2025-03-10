@@ -45,7 +45,7 @@ const Contact = () => {
         </h2>
 
         {/* Contact Information */}
-        <div className="mb-6 space-y-3">
+        {/* <div className="mb-6 space-y-3">
           <div className="flex items-center gap-3 bg-[#E9D5FF] p-3 rounded-lg shadow">
             <Mail className="text-purple-700" size={22} />
             <p className="font-medium text-gray-800">
@@ -62,7 +62,7 @@ const Contact = () => {
               500 Trendy Ave, Los Angeles, CA, USA
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Contact Form */}
         <form onSubmit={handleSubmit} className="space-y-4">

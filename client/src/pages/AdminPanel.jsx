@@ -15,17 +15,17 @@ export default function AdminPanel() {
           {" "}
           {/* Buttons as a vertical list */}
           <Link to="/create-product" className="w-full">
-            <button className="btn w-full text-white bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+            <button className="btn w-full text-white bg-gradient-to-r from-pink-400 via-fuchsia-500 to-purple-600 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
               New Product
             </button>
           </Link>
           <Link to="/view-product" className="w-full">
-            <button className="btn w-full text-white bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+            <button className="btn w-full text-white bg-gradient-to-r from-pink-400 via-fuchsia-500 to-purple-600 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
               View Products
             </button>
           </Link>
-          <Link to="/view-orders" className="w-full">
-            <button className="btn w-full text-white bg-gradient-to-r from-pink-500 via-fuchsia-600 to-purple-700 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+          <Link to="/order-list" className="w-full">
+            <button className="btn w-full text-white bg-gradient-to-r from-pink-400 via-fuchsia-500 to-purple-600 hover:bg-[#9333EA] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
               Orders
             </button>
           </Link>

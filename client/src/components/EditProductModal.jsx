@@ -9,7 +9,7 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
     stock: "",
     category: "",
     subcategory: "",
-    size: "",
+    sizes: [], // Supports multiple size selections
   });
 
   useEffect(() => {
@@ -21,17 +21,27 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
         stock: product.stock || "",
         category: product.category || "",
         subcategory: product.subcategory || "",
-        size: product.size || "",
+        sizes: product.sizes || [], // Ensure existing sizes are pre-checked
       });
     }
   }, [product]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        sizes: checked
+          ? [...prev.sizes, value] // Add size if checked
+          : prev.sizes.filter((size) => size !== value), // Remove size if unchecked
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -53,94 +63,106 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-purple-100 p-6 rounded-xl shadow-lg w-96 max-h-[80vh] overflow-y-auto border border-purple-300">
-        <h2 className="text-2xl font-bold mb-4 text-purple-800 text-center">
+      <div className="bg-purple-100 p-4 rounded-xl shadow-lg w-96 max-h-[80vh] overflow-y-auto border border-purple-300">
+        <h2 className="text-xl font-bold mb-3 text-purple-800 text-center">
           Edit Product
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="block text-purple-700">
+        <form onSubmit={handleSubmit} className="space-y-2">
+          <label className="block text-purple-700 text-sm">
             Product Name
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-8 text-sm"
               required
             />
           </label>
-          <label className="block text-purple-700">
+          <label className="block text-purple-700 text-sm">
             Description
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="textarea textarea-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="textarea textarea-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-16 text-sm"
             />
           </label>
-          <label className="block text-purple-700">
+          <label className="block text-purple-700 text-sm">
             Price
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-8 text-sm"
               required
             />
           </label>
-          <label className="block text-purple-700">
+          <label className="block text-purple-700 text-sm">
             Stock
             <input
               type="number"
               name="stock"
               value={formData.stock}
               onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-8 text-sm"
             />
           </label>
-          <label className="block text-purple-700">
+          <label className="block text-purple-700 text-sm">
             Category
             <input
               type="text"
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-8 text-sm"
               required
             />
           </label>
-          <label className="block text-purple-700">
+          <label className="block text-purple-700 text-sm">
             Subcategory
             <input
               type="text"
               name="subcategory"
               value={formData.subcategory}
               onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
+              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500 h-8 text-sm"
             />
           </label>
-          <label className="block text-purple-700">
-            Size
-            <input
-              type="text"
-              name="size"
-              value={formData.size}
-              onChange={handleChange}
-              className="input input-bordered w-full bg-white text-purple-800 border-purple-400 focus:ring-purple-500"
-            />
+
+          {/* ✅ Size Selection Checkboxes */}
+          <label className="block text-purple-700 text-sm">
+            Available Sizes
           </label>
-          <div className="flex justify-end space-x-2">
+          <div className="grid grid-cols-3 gap-1 p-1 border border-purple-300 rounded-lg bg-white">
+            {["XS", "S", "M", "L", "XL", "XXL", "XXXL"].map((size) => (
+              <label key={size} className="flex items-center space-x-1 text-xs">
+                <input
+                  type="checkbox"
+                  name="sizes"
+                  value={size}
+                  checked={formData.sizes.includes(size)}
+                  onChange={handleChange}
+                  className="form-checkbox text-purple-600 h-3 w-3"
+                />
+                <span>{size}</span>
+              </label>
+            ))}
+          </div>
+
+          {/* ✅ Aligned Buttons Properly & Reduced Size */}
+          <div className="flex justify-end space-x-2 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="btn bg-purple-300 hover:bg-purple-400 text-purple-900"
+              className="btn px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white rounded-lg text-sm transition duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn bg-purple-600 hover:bg-purple-700 text-white"
+              className="btn px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition duration-200"
             >
               Update
             </button>
