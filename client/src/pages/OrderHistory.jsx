@@ -10,10 +10,10 @@ const OrderHistory = () => {
     // Retrieve all orders from localStorage
     retrieveOrders();
 
-    // Periodically update order statuses
+    // Periodically update order statuses with randomized timing
     const interval = setInterval(() => {
       updateOrderStatus();
-    }, 10000); // Change status every 10 seconds (for demonstration purposes)
+    }, 20000 + Math.random() * 10000); // Change status randomly between 20-30 seconds
 
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
@@ -21,24 +21,37 @@ const OrderHistory = () => {
 
   const retrieveOrders = () => {
     try {
-      // Get single order if it exists (from the checkout flow)
-      const orderString = localStorage.getItem("order");
+      // Initialize allOrders array
       let allOrders = [];
-
-      if (orderString) {
-        const order = JSON.parse(orderString);
-        // Add some metadata if not present
-        if (!order.id) order.id = `ORD-${Date.now()}`;
-        if (!order.orderDate) order.orderDate = new Date().toISOString();
-        if (!order.status) order.status = "Pending";
-        allOrders.push(order);
-      }
 
       // Get multiple orders if they exist
       const ordersString = localStorage.getItem("orders");
       if (ordersString) {
-        const ordersArray = JSON.parse(ordersString);
-        allOrders = [...allOrders, ...ordersArray];
+        allOrders = JSON.parse(ordersString);
+      }
+
+      // Get single order if it exists (from the checkout flow) and it's not already in orders
+      const orderString = localStorage.getItem("order");
+      if (orderString) {
+        const newOrder = JSON.parse(orderString);
+        // Add some metadata if not present
+        if (!newOrder.id) newOrder.id = `ORD-${Date.now()}`;
+        if (!newOrder.orderDate) newOrder.orderDate = new Date().toISOString();
+        if (!newOrder.status) newOrder.status = "Pending";
+
+        // Check if this order is already in the orders array
+        const orderExists = allOrders.some((order) => order.id === newOrder.id);
+
+        if (!orderExists) {
+          // Add the new order to the beginning of the array
+          allOrders = [newOrder, ...allOrders];
+
+          // Save the updated orders array back to localStorage
+          localStorage.setItem("orders", JSON.stringify(allOrders));
+
+          // Clear the single order from localStorage
+          localStorage.removeItem("order");
+        }
       }
 
       // Sort orders by date (newest first)
@@ -56,22 +69,81 @@ const OrderHistory = () => {
     }
   };
 
-  // Periodically update the order status
+  // Randomly update a single order status
   const updateOrderStatus = () => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => {
-        if (order.status === "Pending") {
-          return { ...order, status: "Processing" };
-        } else if (order.status === "Processing") {
-          return { ...order, status: "Shipped" };
-        } else if (order.status === "Shipped") {
-          return { ...order, status: "Delivered" };
+    setOrders((prevOrders) => {
+      // Only proceed if there are orders to update
+      if (prevOrders.length === 0) return prevOrders;
+
+      // Get a random order to update (that isn't already delivered)
+      const pendingOrders = prevOrders.filter(
+        (order) => order.status !== "Delivered" && order.status !== "Cancelled"
+      );
+
+      if (pendingOrders.length === 0) return prevOrders;
+
+      // Select a random pending order
+      const randomIndex = Math.floor(Math.random() * pendingOrders.length);
+      const orderToUpdate = pendingOrders[randomIndex];
+      const orderIndex = prevOrders.findIndex(
+        (order) => order.id === orderToUpdate.id
+      );
+
+      // Create a deep copy of the orders array
+      const updatedOrders = [...prevOrders];
+
+      // Update the status based on current status
+      if (updatedOrders[orderIndex].status === "Pending") {
+        updatedOrders[orderIndex] = {
+          ...updatedOrders[orderIndex],
+          status: "Processing",
+        };
+      } else if (updatedOrders[orderIndex].status === "Processing") {
+        updatedOrders[orderIndex] = {
+          ...updatedOrders[orderIndex],
+          status: "Shipped",
+        };
+      } else if (updatedOrders[orderIndex].status === "Shipped") {
+        updatedOrders[orderIndex] = {
+          ...updatedOrders[orderIndex],
+          status: "Delivered",
+        };
+      }
+
+      // Small chance (5%) of an order being cancelled if it's still pending or processing
+      const status = updatedOrders[orderIndex].status;
+      if (
+        (status === "Pending" || status === "Processing") &&
+        Math.random() < 0.05
+      ) {
+        updatedOrders[orderIndex] = {
+          ...updatedOrders[orderIndex],
+          status: "Cancelled",
+        };
+      }
+
+      // Save updated orders to localStorage
+      localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+      return updatedOrders;
+    });
+  };
+
+  // Handle return order function
+  const handleReturnOrder = (orderId) => {
+    setOrders((prevOrders) => {
+      const updatedOrders = prevOrders.map((order) => {
+        if (order.id === orderId && order.status === "Delivered") {
+          return { ...order, status: "Return Requested" };
         }
         return order;
-      })
-    );
-    // Save updated orders to localStorage
-    localStorage.setItem("orders", JSON.stringify(orders));
+      });
+
+      // Save to localStorage
+      localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+      return updatedOrders;
+    });
   };
 
   // Format date for display
@@ -94,6 +166,10 @@ const OrderHistory = () => {
         return "bg-green-100 text-green-800";
       case "cancelled":
         return "bg-red-100 text-red-800";
+      case "return requested":
+        return "bg-orange-100 text-orange-800";
+      case "returned":
+        return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -251,15 +327,26 @@ const OrderHistory = () => {
               </div>
 
               {/* Order Footer */}
-              <div className="bg-gray-50 p-4 border-t flex justify-between items-center">
-                <button
-                  onClick={() =>
-                    navigate(`/order-details/${order.id || index}`)
-                  }
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  View Details
-                </button>
+              <div className="bg-gray-50 p-4 border-t flex flex-wrap justify-between items-center">
+                <div className="flex space-x-4">
+                  {/* <button
+                    onClick={() =>
+                      navigate(`/order-details/${order.id || index}`)
+                    }
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details
+                  </button> */}
+
+                  {order.status === "Delivered" && (
+                    <button
+                      onClick={() => handleReturnOrder(order.id)}
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      Return Order
+                    </button>
+                  )}
+                </div>
                 <p className="font-bold">
                   Total: ${parseFloat(order.totalPrice).toFixed(2)}
                 </p>

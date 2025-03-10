@@ -17,8 +17,16 @@ function ProductDetails() {
   const [showWishlistToast, setShowWishlistToast] = useState(false); // State for Wishlist Toast
   const [selectedSize, setSelectedSize] = useState(""); // State for size selection
 
-  // Available sizes
-  const sizes = ["S", "M", "L", "XL", "XXL"];
+  // Available sizes based on product category
+  const adultSizes = ["S", "M", "L", "XL", "XXL"];
+  const kidsSizes = [
+    "0-2 years",
+    "2-4 years",
+    "4-6 years",
+    "6-8 years",
+    "8-10 years",
+    "10-12 years",
+  ];
 
   useEffect(() => {
     if (!id) {
@@ -38,6 +46,7 @@ function ProductDetails() {
     };
     fetchProductDetails();
   }, [id]);
+
   const handleAddToCart = () => {
     if (product) {
       // Add product with selected size if available
@@ -48,6 +57,7 @@ function ProductDetails() {
       setShowCartToast(true); // Show Cart Toast
     }
   };
+
   const handleAddToWishlist = () => {
     if (product) {
       // Add product with selected size if available
@@ -63,11 +73,41 @@ function ProductDetails() {
     setSelectedSize(size);
   };
 
+  // Determine if product is for kids based on product category or tags
+  const isKidsProduct = () => {
+    if (!product) return false;
+
+    // Check if product has category or tags that indicate it's for kids
+    // This logic can be adjusted based on how your products are categorized
+    const productName = product.name?.toLowerCase() || "";
+    const productDescription = product.description?.toLowerCase() || "";
+    const productCategory = product.category?.toLowerCase() || "";
+
+    return (
+      productName.includes("kid") ||
+      productName.includes("child") ||
+      productName.includes("baby") ||
+      productDescription.includes("kid") ||
+      productDescription.includes("child") ||
+      productDescription.includes("baby") ||
+      productCategory.includes("kid") ||
+      productCategory.includes("child") ||
+      productCategory.includes("baby")
+    );
+  };
+
+  // Get the appropriate sizes array based on product type
+  const getSizes = () => {
+    return isKidsProduct() ? kidsSizes : adultSizes;
+  };
+
   const isProductInWishlist = wishlist.some(
     (item) => item._id === product?._id
   );
+
   if (loading) return <p>Loading product details...</p>;
   if (error) return <p>{error}</p>;
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-6">
@@ -85,19 +125,20 @@ function ProductDetails() {
             <h3 className="font-semibold">Product Description:</h3>
             <p>{product.description}</p>
           </div>
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <h3 className="font-semibold">Stock:</h3>
             <p>{product.stock} items available</p>
-          </div>
+          </div> */}
 
           {/* Size Selection */}
           <div className="mt-4">
             <h3 className="font-semibold">Select Size:</h3>
             <div className="flex flex-wrap gap-2 mt-2">
-              {sizes.map((size) => (
+              {getSizes().map((size) => (
                 <label key={size} className="flex items-center cursor-pointer">
                   <input
-                    type="checkbox"
+                    type="radio"
+                    name="size"
                     checked={selectedSize === size}
                     onChange={() => handleSizeChange(size)}
                     className="mr-1"

@@ -36,12 +36,12 @@ const ShoppersFooter = () => {
                   FAQs
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/returns" className="hover:text-purple-400">
                   Returns & Exchanges
                 </a>
               </li>
-              {/* <li>
+              <li>
                 <a href="/shipping" className="hover:text-purple-400">
                   Shipping Info
                 </a>
@@ -83,7 +83,7 @@ const ShoppersFooter = () => {
           </div>
         </div>
 
-        <div className="mt-8 border-t  border-gray-700 pt-4 text-purple-400 text-center text-sm">
+        <div className="mt-8 border-t border-gray-700 pt-4 text-purple-400 text-center text-sm">
           <p>
             &copy; {new Date().getFullYear()} Shoppers. All rights reserved.
           </p>

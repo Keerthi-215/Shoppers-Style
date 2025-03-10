@@ -25,6 +25,7 @@ import ViewProducts from "./pages/ViewProduct";
 import ProfilePage from "./pages/ProfilePage";
 import OrderList from "./components/OrderList";
 import Wishlist from "./pages/Wishlist";
+import FAQ from "./pages/FAQ"; // Added FAQ import
 
 // Set up a global axios instance for API calls
 const api = axios.create({
@@ -48,13 +49,11 @@ function App() {
             <Route path="/wishlist" element={<Wishlist api={api} />} />
             <Route path="/order-list" element={<OrderList api={api} />} />
             <Route path="/reviews" element={<Reviews api={api} />} />
-
-            {/* Corrected closing tag */}
+            <Route path="/faq" element={<FAQ />} /> {/* Added FAQ route */}
             {/* Authentication Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<ProfilePage api={api} />} />
-            <Route path="/wishlist" element={<Wishlist api={api} />} />
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminPanel />} />
             <Route
