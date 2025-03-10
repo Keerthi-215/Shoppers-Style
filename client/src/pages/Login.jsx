@@ -14,7 +14,7 @@ const Login = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      navigate("/"); // ✅ Redirect to homepage if already logged in
+      navigate("/login"); // ✅ Redirect to homepage if already logged in
     }
   }, [navigate]);
 

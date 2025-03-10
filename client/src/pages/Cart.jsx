@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
-import { CartContext } from "../components/CartContext"; // Corrected import
+import React, { useContext, useEffect } from "react";
+import { CartContext } from "../components/CartContext";
 import CartItem from "../components/CartItem";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const {
@@ -10,13 +10,23 @@ const Cart = () => {
     clearCart,
     increaseQuantity,
     decreaseQuantity,
+    getProductDetails,
   } = useContext(CartContext);
 
   // Calculate total price
   const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + (item.price || 0) * item.quantity,
     0
   );
+
+  // Fetch missing product details for cart items (if needed)
+  useEffect(() => {
+    cartItems.forEach((item) => {
+      if (!item.price) {
+        getProductDetails(item._id); // Fetch missing product details
+      }
+    });
+  }, [cartItems, getProductDetails]);
 
   return (
     <div className="container mx-auto p-6">
@@ -27,9 +37,9 @@ const Cart = () => {
       ) : (
         <div>
           {/* List all cart items */}
-          {cartItems.map((item, index) => (
+          {cartItems.map((item) => (
             <CartItem
-              key={item.id || index} // Use item.id as the key, fall back to index if item.id is not available
+              key={item._id} // Use item._id as the key to ensure no duplication
               item={item}
               removeFromCart={removeFromCart}
               increaseQuantity={increaseQuantity}
