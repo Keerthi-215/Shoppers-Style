@@ -14,15 +14,40 @@ const Shipment = () => {
 
   // Handle input changes
   const handleChange = (e) => {
-    setShippingDetails({ ...shippingDetails, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // For postalCode and phone, only allow numeric values
+    if (name === "postalCode" || name === "phone") {
+      if (!/^\d*$/.test(value)) return; // Block non-numeric input
+    }
+
+    setShippingDetails({ ...shippingDetails, [name]: value });
+  };
+
+  // Handle key press to prevent non-numeric input for specific fields
+  const handleKeyPress = (e) => {
+    const { name } = e.target;
+    if (name === "postalCode" || name === "phone") {
+      // Allow only digits and control keys
+      if (
+        !/^\d$/.test(e.key) &&
+        e.key !== "Backspace" &&
+        e.key !== "Delete" &&
+        e.key !== "ArrowLeft" &&
+        e.key !== "ArrowRight" &&
+        e.key !== "Tab"
+      ) {
+        e.preventDefault();
+      }
+    }
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting shipping details:", shippingDetails); // Debugging log
-    localStorage.setItem("shippingDetails", JSON.stringify(shippingDetails)); // Save to localStorage
-    navigate("/payment"); // Navigate to payment page after saving details
+    console.log("Submitting shipping details:", shippingDetails);
+    localStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
+    navigate("/payment");
   };
 
   return (
@@ -44,6 +69,7 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              value={shippingDetails.fullName}
             />
           </div>
 
@@ -58,6 +84,7 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              value={shippingDetails.address}
             />
           </div>
 
@@ -72,6 +99,7 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              value={shippingDetails.city}
             />
           </div>
 
@@ -86,6 +114,10 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              onKeyDown={handleKeyPress}
+              value={shippingDetails.postalCode}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
           </div>
 
@@ -100,6 +132,7 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              value={shippingDetails.country}
             />
           </div>
 
@@ -114,6 +147,10 @@ const Shipment = () => {
               required
               className="input input-bordered w-full"
               onChange={handleChange}
+              onKeyDown={handleKeyPress}
+              value={shippingDetails.phone}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
           </div>
 

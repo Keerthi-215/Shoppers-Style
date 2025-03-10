@@ -86,9 +86,6 @@ function Collections() {
                 <p className="text-gray-600 text-sm font-medium mt-1">
                   ${product.price}
                 </p>
-                <div className="mt-2 text-xs text-purple-700 font-medium bg-purple-100 px-2 py-1 rounded-md inline-block">
-                  Free Delivery
-                </div>
               </div>
             </Link>
           ))}
