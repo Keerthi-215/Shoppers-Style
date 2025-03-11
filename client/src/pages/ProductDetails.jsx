@@ -109,7 +109,7 @@ function ProductDetails() {
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full md:w-[950px] h-[1000px] object-cover object-right rounded-t-lg"
+              className="w-full h-85 object-cover rounded-md shadow-lg"
             />
           </div>
           <div className="flex-1 p-6">
