@@ -5,15 +5,17 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [returnReasons, setReturnReasons] = useState({}); // Track return reasons
+  const [disabledReturns, setDisabledReturns] = useState(
+    JSON.parse(localStorage.getItem("disabledReturns")) || {} // Load from localStorage
+  );
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // Retrieve user data and token
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
 
-        // Validate if user and token exist
         if (!user || !user._id) {
           setError("User not found. Please log in.");
           setLoading(false);
@@ -25,26 +27,18 @@ const OrderHistory = () => {
           return;
         }
 
-        const userId = user._id; // Extract user ID
+        const userId = user._id;
         console.log("🔍 Fetching orders for user:", userId);
 
-        // API call to fetch orders
         const response = await axios.get(
           `http://localhost:5000/api/orders/user/${userId}`,
           {
-            headers: { Authorization: `Bearer ${token}` }, // Correct header format
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
         console.log("✅ API Response:", response.data);
-
-        // Prevent duplicate orders from being set
-        setOrders((prevOrders) => {
-          const newOrders = response.data;
-          return JSON.stringify(prevOrders) !== JSON.stringify(newOrders)
-            ? newOrders
-            : prevOrders;
-        });
+        setOrders(response.data);
       } catch (err) {
         console.error(
           "❌ Error fetching orders:",
@@ -58,6 +52,42 @@ const OrderHistory = () => {
 
     fetchOrders();
   }, []);
+
+  // Show return reason input when clicking "Return Order"
+  const handleReturnClick = (orderId) => {
+    setReturnReasons((prev) => ({ ...prev, [orderId]: "" })); // Initialize reason input
+  };
+
+  // Update reason input
+  const handleReasonChange = (orderId, reason) => {
+    setReturnReasons((prev) => ({ ...prev, [orderId]: reason }));
+  };
+
+  // Submit return request (Static - Only Alert & Disable Button, Saved in Local Storage)
+  const handleSubmitReturn = (orderId) => {
+    const reason = returnReasons[orderId];
+    if (!reason.trim()) {
+      alert("Please provide a reason for returning the order.");
+      return;
+    }
+
+    alert("Your return is getting processed."); // Show static alert
+
+    // Disable the return button for this order
+    const updatedDisabledReturns = { ...disabledReturns, [orderId]: true };
+    setDisabledReturns(updatedDisabledReturns);
+    localStorage.setItem(
+      "disabledReturns",
+      JSON.stringify(updatedDisabledReturns)
+    ); // Save to localStorage
+
+    // Remove the reason input
+    setReturnReasons((prev) => {
+      const newState = { ...prev };
+      delete newState[orderId];
+      return newState;
+    });
+  };
 
   if (loading)
     return (
@@ -96,20 +126,42 @@ const OrderHistory = () => {
                 {new Date(order.createdAt).toLocaleDateString()}
               </p>
 
-              <h4 className="text-lg font-semibold text-purple-700 mt-4">
-                Products:
-              </h4>
-              <ul className="list-disc ml-5">
-                {order.products.map((item, index) => (
-                  <li
-                    key={item._id || item.productId?._id || index}
-                    className="text-gray-700"
-                  >
-                    {item.productId?.name || "Unknown Product"} (x
-                    {item.quantity})
-                  </li>
-                ))}
-              </ul>
+              {order.status === "delivered" && (
+                <>
+                  {!returnReasons.hasOwnProperty(order._id) ? (
+                    <button
+                      onClick={() => handleReturnClick(order._id)}
+                      disabled={disabledReturns[order._id]}
+                      className={`mt-4 px-4 py-2 rounded-md transition duration-200 ${
+                        disabledReturns[order._id]
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-purple-600 text-white hover:bg-purple-700"
+                      }`}
+                    >
+                      {disabledReturns[order._id]
+                        ? "Return Requested"
+                        : "Return Order"}
+                    </button>
+                  ) : (
+                    <div className="mt-4">
+                      <textarea
+                        value={returnReasons[order._id]}
+                        onChange={(e) =>
+                          handleReasonChange(order._id, e.target.value)
+                        }
+                        placeholder="Enter return reason..."
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                      <button
+                        onClick={() => handleSubmitReturn(order._id)}
+                        className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition duration-200"
+                      >
+                        Submit Return
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </li>
           ))}
         </ul>
