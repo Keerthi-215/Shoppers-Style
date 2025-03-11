@@ -58,9 +58,14 @@ const OrderConfirmation = () => {
         try {
           setIsLoading(true);
           const orderData = formatOrderForDB();
+          //new update
+          if (order?._id) {
+            console.log("Order already saved, skipping API call.");
+            return;
+          }
 
           const token = localStorage.getItem("token");
-          console.log(token);
+          //console.log(token);
 
           const res = await axios.post(
             "http://localhost:5000/api/orders",

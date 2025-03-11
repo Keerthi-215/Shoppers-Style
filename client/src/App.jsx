@@ -18,6 +18,7 @@ import Checkout from "./pages/Checkout";
 import Shipment from "./pages/Shipment";
 import Payment from "./pages/Payment";
 import OrderHistory from "./pages/OrderHistory";
+//import fetchOrdersByUserId from "./utils/fetchOrdersByUserId";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -77,7 +78,10 @@ function App() {
               <Route path="/checkout" element={<Checkout api={api} />} />
               <Route path="/shipment" element={<Shipment />} />
               <Route path="/payment" element={<Payment api={api} />} />
-              <Route path="/order-history" element={<OrderHistory />} />
+              <Route
+                path="/order-history"
+                element={<OrderHistory api={api} />}
+              />
               <Route
                 path="/order-confirmation"
                 element={<OrderConfirmation api={api} />}

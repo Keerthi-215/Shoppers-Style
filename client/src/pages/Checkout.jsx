@@ -128,7 +128,7 @@ const Checkout = () => {
       <button
         className="bg-blue-500 text-white p-2 rounded mt-6 w-full"
         onClick={handlePlaceOrder}
-        disabled={cartItems.length === 0}
+        disabled={orderPlaced || cartItems.length === 0}
       >
         View Order
       </button>
