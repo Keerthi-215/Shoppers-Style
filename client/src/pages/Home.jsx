@@ -7,24 +7,24 @@ import banner1 from "../assets/images/banner1.png";
 import banner2 from "../assets/images/banner2.png";
 import banner3 from "../assets/images/banner3.jpg";
 import banner4 from "../assets/images/banner4.jpg";
-import banner5 from "../assets/images/banner5.jpg";
+//import banner5 from "../assets/images/banner5.jpg";
 import banner6 from "../assets/images/banner6.jpg";
-import banner7 from "../assets/images/banner7.png";
+//import banner7 from "../assets/images/banner7.png";
 import banner8 from "../assets/images/banner8.png";
-import banner9 from "../assets/images/banner9.png";
+//import banner9 from "../assets/images/banner9.png";
 import banner10 from "../assets/images/banner10.png";
 
 const banners = [
-  banner1,
-  banner2,
-  banner3,
   banner4,
-  banner5,
-  banner6,
-  banner7,
-  banner8,
-  banner9,
+  banner1,
+  banner3,
   banner10,
+  //banner5,
+  banner6,
+  banner2,
+  //banner7,
+  banner8,
+  //banner9,
 ];
 
 export default function HomePage() {
@@ -63,7 +63,7 @@ export default function HomePage() {
             .slice(0, 4),
           kids: productsData
             .filter((product) => product.category === "Kids")
-            .slice(0, 4),
+            .slice(15, 19),
         });
       }
     } catch (error) {

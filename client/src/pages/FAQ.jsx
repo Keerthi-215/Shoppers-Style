@@ -165,11 +165,11 @@ function FAQ() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-8">
+        <h1 className="text-4xl font-bold text-purple-900 text-center mb-8">
           Frequently Asked Questions
         </h1>
 
-        <p className="text-gray-600 text-center mb-12">
+        <p className="text-gray-700 text-center mb-12">
           Find answers to the most common questions about our products, ordering
           process, shipping, returns, and more. Can't find what you're looking
           for?{" "}
@@ -229,7 +229,7 @@ function FAQ() {
                       onClick={() => toggleItem(item.id)}
                       className="flex justify-between items-center w-full py-4 px-2 text-left focus:outline-none"
                     >
-                      <span className="font-medium text-gray-700">
+                      <span className="font-semibold text-purple-800">
                         {item.question}
                       </span>
                       <span className="ml-6 flex-shrink-0">
