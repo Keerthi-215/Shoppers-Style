@@ -104,7 +104,7 @@ const Cart = () => {
                   Total: ${totalPrice.toFixed(2)}
                 </div>
 
-                <Link to="/checkout">
+                <Link to="/shipment">
                   <button className="btn btn-success text-white py-2 px-6 rounded-md transition-colors duration-300">
                     Proceed to Checkout
                   </button>
