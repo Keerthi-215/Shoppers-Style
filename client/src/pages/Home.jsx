@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { MessageCircle } from "lucide-react";
 
 // Import banner images
 import banner1 from "../assets/images/banner1.png";
@@ -35,7 +34,6 @@ export default function HomePage() {
     women: [],
     kids: [],
   });
-  const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,21 +71,6 @@ export default function HomePage() {
     }
   };
 
-  const handleWhatsAppClick = () => {
-    // Replace with your actual WhatsApp number and message
-    const phoneNumber = "+917794806897";
-    const message = "Hello! I'm interested in your products.";
-
-    // Encode the message for URL
-    const encodedMessage = encodeURIComponent(message);
-
-    // Create WhatsApp URL
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, "_blank");
-  };
-
   return (
     <div className="max-screen bg-[#F9F5FF]">
       {/* Banner Section */}
@@ -102,22 +85,6 @@ export default function HomePage() {
             }`}
           />
         ))}
-        {/* Banner Overlay */}
-        {/* <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center text-white px-4">
-          <h1 className="text-3xl md:text-5xl font-bold drop-shadow-lg">
-            Elevate Your Style
-          </h1>
-          <p className="mt-2 text-lg md:text-xl">
-            Discover premium collections & latest fashion trends.
-          </p>
-          <Link
-            to="/collections"
-            className="mt-4 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white text-lg font-semibold rounded-full flex items-center gap-2 shadow-lg transition-all transform hover:scale-105"
-          >
-            <ShoppingBag className="h-6 w-6" />
-            Shop Now
-          </Link>
-        </div> */}
       </div>
 
       {/* Category Sections */}
@@ -129,7 +96,7 @@ export default function HomePage() {
                 {category} Collection
               </h2>
               <Link
-                to={`/collections/${category}`}
+                to={`/collections`}
                 className="text-purple-600 hover:underline font-semibold"
               >
                 View All
@@ -170,27 +137,6 @@ export default function HomePage() {
             )}
           </section>
         ))}
-      </div>
-
-      {/* WhatsApp Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="relative">
-          <button
-            onClick={handleWhatsAppClick}
-            onMouseEnter={() => setShowWhatsAppTooltip(true)}
-            onMouseLeave={() => setShowWhatsAppTooltip(false)}
-            className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all transform hover:scale-110 flex items-center justify-center"
-            aria-label="Contact us on WhatsApp"
-          >
-            <MessageCircle className="h-6 w-6" />
-          </button>
-
-          {showWhatsAppTooltip && (
-            <div className="absolute bottom-full right-0 mb-2 bg-white text-gray-800 px-3 py-1 rounded shadow-md whitespace-nowrap">
-              Chat with us on WhatsApp
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
