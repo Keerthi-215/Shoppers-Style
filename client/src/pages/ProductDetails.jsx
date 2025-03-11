@@ -131,14 +131,17 @@ function ProductDetails() {
                 {getSizes().map((size) => (
                   <label
                     key={size}
-                    className="flex items-center cursor-pointer px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                    className={`flex items-center cursor-pointer px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition ${
+                      selectedSize === size ? "bg-purple-100" : ""
+                    }`} // Add background highlight when selected
                   >
                     <input
                       type="radio"
                       name="size"
+                      value={size}
                       checked={selectedSize === size}
                       onChange={() => handleSizeChange(size)}
-                      className="mr-1 hidden"
+                      className="mr-1 hidden" // Keep input hidden
                     />
                     <span className="text-sm">{size}</span>
                   </label>
