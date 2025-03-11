@@ -15,7 +15,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Hero Section with Team Photo */}
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-screen md:h-[800px]">
         <img
           src={teamPhoto}
           alt="Our Team"

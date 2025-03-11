@@ -137,7 +137,7 @@ function Collections() {
                 className="card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-transform transform hover:scale-105"
               >
                 <Link to={`/product/${product._id}`}>
-                  <figure className="relative h-96 w-full overflow-hidden rounded-t-lg">
+                  <figure className="relative h-90 w-full overflow-hidden rounded-t-lg">
                     <img
                       src={product.imageUrl}
                       alt={product.name}
