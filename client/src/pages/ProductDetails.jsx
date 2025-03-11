@@ -5,7 +5,10 @@ import { useCart } from "../components/CartContext";
 import { useWishlist } from "../components/WishlistContext";
 import ToastNotification from "../components/ToastNotification";
 import Reviews from "../pages/Reviews";
+import { FaHeart } from "react-icons/fa"; // Importing heart icon from react-icons
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useCart();
@@ -13,11 +16,9 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showCartToast, setShowCartToast] = useState(false); // State for Cart Toast
-  const [showWishlistToast, setShowWishlistToast] = useState(false); // State for Wishlist Toast
-  const [selectedSize, setSelectedSize] = useState(""); // State for size selection
+  const [showCartToast, setShowCartToast] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
 
-  // Available sizes based on product category
   const adultSizes = ["S", "M", "L", "XL", "XXL"];
   const kidsSizes = [
     "0-2 years",
@@ -49,23 +50,11 @@ function ProductDetails() {
 
   const handleAddToCart = () => {
     if (product) {
-      // Add product with selected size if available
       const productWithSize = selectedSize
         ? { ...product, selectedSize }
         : product;
       addToCart(productWithSize);
-      setShowCartToast(true); // Show Cart Toast
-    }
-  };
-
-  const handleAddToWishlist = () => {
-    if (product) {
-      // Add product with selected size if available
-      const productWithSize = selectedSize
-        ? { ...product, selectedSize }
-        : product;
-      addToWishlist(productWithSize);
-      setShowWishlistToast(true); // Show Wishlist Toast
+      setShowCartToast(true);
     }
   };
 
@@ -73,12 +62,8 @@ function ProductDetails() {
     setSelectedSize(size);
   };
 
-  // Determine if product is for kids based on product category or tags
   const isKidsProduct = () => {
     if (!product) return false;
-
-    // Check if product has category or tags that indicate it's for kids
-    // This logic can be adjusted based on how your products are categorized
     const productName = product.name?.toLowerCase() || "";
     const productDescription = product.description?.toLowerCase() || "";
     const productCategory = product.category?.toLowerCase() || "";
@@ -96,80 +81,83 @@ function ProductDetails() {
     );
   };
 
-  // Get the appropriate sizes array based on product type
   const getSizes = () => {
     return isKidsProduct() ? kidsSizes : adultSizes;
   };
 
-  const isProductInWishlist = wishlist.some(
-    (item) => item._id === product?._id
-  );
-
-  if (loading) return <p>Loading product details...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading)
+    return <p className="text-center text-lg">Loading product details...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Product Image */}
         <div className="flex-1">
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="w-full h-85 object-cover rounded-md"
+            className="w-full h-96 object-cover rounded-lg shadow-md"
           />
         </div>
-        <div className="flex-1">
+
+        {/* Product Info */}
+        <div className="flex-1 space-y-4">
           <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-gray-600 mt-2">${product.price}</p>
-          <div className="mt-4">
-            <h3 className="font-semibold">Product Description:</h3>
-            <p>{product.description}</p>
+          <p className="text-gray-600 text-lg font-semibold">
+            ${product.price}
+          </p>
+
+          {/* Description */}
+          <div>
+            <h3 className="font-semibold text-lg">Product Description:</h3>
+            <p className="text-gray-700">{product.description}</p>
           </div>
-          {/* <div className="mt-4">
-            <h3 className="font-semibold">Stock:</h3>
-            <p>{product.stock} items available</p>
-          </div> */}
 
           {/* Size Selection */}
-          <div className="mt-4">
-            <h3 className="font-semibold">Select Size:</h3>
-            <div className="flex flex-wrap gap-2 mt-2">
+          <div>
+            <h3 className="font-semibold text-lg">Select Size:</h3>
+            <div className="flex flex-wrap gap-3 mt-2">
               {getSizes().map((size) => (
-                <label key={size} className="flex items-center cursor-pointer">
+                <label
+                  key={size}
+                  className={`px-4 py-2 border rounded-md cursor-pointer text-sm ${
+                    selectedSize === size
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
                   <input
                     type="radio"
                     name="size"
                     checked={selectedSize === size}
                     onChange={() => handleSizeChange(size)}
-                    className="mr-1"
+                    className="hidden"
                   />
-                  <span className="text-sm">{size}</span>
+                  {size}
                 </label>
               ))}
             </div>
           </div>
 
-          <div className="mt-6">
+          {/* Buttons */}
+          <div className="flex items-center gap-6">
+            {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              className="bg-blue-500 text-white py-2 px-4 rounded-md"
+              className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded-md shadow-md transition-all"
             >
               Add to Cart
             </button>
-          </div>
-          <div className="mt-4">
-            <button
-              onClick={handleAddToWishlist}
-              className={`${
-                isProductInWishlist ? "bg-red-500" : "bg-yellow-500"
-              } text-white py-2 px-4 rounded-md`}
-              disabled={isProductInWishlist}
-            >
-              {isProductInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
+
+            {/* Wishlist Heart Icon */}
+            <button className="text-red-500 text-2xl hover:scale-110 transition-all">
+              <FaHeart />
             </button>
           </div>
         </div>
       </div>
+
       {/* Show Toast for Cart */}
       {showCartToast && (
         <ToastNotification
@@ -177,18 +165,14 @@ function ProductDetails() {
           onClose={() => setShowCartToast(false)}
         />
       )}
-      {/* Show Toast for Wishlist */}
-      {showWishlistToast && (
-        <ToastNotification
-          message="Your product has been added to the wishlist!"
-          onClose={() => setShowWishlistToast(false)}
-        />
-      )}
-      Reviews Section
+
+      {/* Reviews Section with Stars */}
       <div className="mt-8">
-        <Reviews productId={id} />
+        <h3 className="text-xl font-semibold mb-2">Reviews</h3>
+        <Reviews productId={id} showStarsOnly={true} />
       </div>
     </div>
   );
 }
+
 export default ProductDetails;
