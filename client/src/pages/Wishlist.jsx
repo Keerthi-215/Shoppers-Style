@@ -1,5 +1,6 @@
 import { useWishlist } from "../components/WishlistContext"; // Correct path
 import { Link } from "react-router-dom";
+
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
   return (
@@ -17,20 +18,20 @@ const Wishlist = () => {
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className="w-full h-40 object-cover rounded-md"
+                className="w-full h-112 object-cover rounded-md"
               />
               <h2 className="text-xl font-semibold mt-2">{product.name}</h2>
               <p className="text-gray-600">${product.price}</p>
               <div className="mt-4 flex justify-between">
                 <Link
                   to={`/product/${product._id}`} // Corrected to use _id
-                  className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                  className="bg-blue-500 text-white py-1 px-2 rounded-md text-sm"
                 >
                   View
                 </Link>
                 <button
                   onClick={() => removeFromWishlist(product._id)} // Corrected to use _id
-                  className="bg-red-500 text-white py-2 px-4 rounded-md"
+                  className="bg-red-500 text-white py-1 px-2 rounded-md text-sm"
                 >
                   Remove
                 </button>
@@ -42,4 +43,5 @@ const Wishlist = () => {
     </div>
   );
 };
+
 export default Wishlist;
