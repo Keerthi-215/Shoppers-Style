@@ -57,6 +57,7 @@ const Checkout = () => {
     clearCart(); // Clear the cart items from the context
     localStorage.removeItem("cartItems"); // Clear cart items from localStorage
     setOrderPlaced(true); // Mark the order as placed
+    // http to backend to create the order
     navigate("/order-confirmation"); // Navigate to the Order Confirmation page
   };
   const getTotalPrice = () => {
@@ -128,7 +129,7 @@ const Checkout = () => {
       <button
         className="bg-blue-500 text-white p-2 rounded mt-6 w-full"
         onClick={handlePlaceOrder}
-        disabled={cartItems.length === 0}
+        disabled={orderPlaced || cartItems.length === 0}
       >
         View Order
       </button>

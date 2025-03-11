@@ -10,6 +10,30 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+const getOrdersByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from route parameters
+    console.log("🔍 Received request for user ID:", userId); // ✅ Debugging
+
+    const orders = await Order.find({ userId }).populate(
+      "userId",
+      "name email"
+    );
+
+    console.log("📦 Orders found:", orders); // ✅ Debugging
+
+    if (!orders.length) {
+      console.warn("⚠️ No orders found for this user");
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    res.json(orders);
+  } catch (error) {
+    console.error("❌ Error fetching orders:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const createOrder = async (req, res) => {
   try {
     console.log(req.body);
@@ -21,6 +45,7 @@ const createOrder = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 const updateOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -28,7 +53,7 @@ const updateOrder = async (req, res) => {
     console.log(req.body);
     console.log(req.user);
 
-    const updatedPost = await Order.findByIdAndUpdate(orderId, updates, {
+    const updateOrder = await Order.findByIdAndUpdate(orderId, updates, {
       new: true,
       runValidators: true,
     }).populate("userId", "name email");
@@ -57,4 +82,36 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-export { getAllOrders, createOrder, updateOrder, deleteOrder };
+///✅ New Function: Update Order Status
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!["pending", "shipped", "delivered", "cancelled"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status update" });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true, runValidators: true }
+    ).populate("userId", "name email");
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+export {
+  getAllOrders,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  getOrdersByUserId,
+  updateOrderStatus,
+};
