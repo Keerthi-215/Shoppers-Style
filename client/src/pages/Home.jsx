@@ -57,13 +57,13 @@ export default function HomePage() {
         setProducts({
           men: productsData
             .filter((product) => product.category === "Men")
-            .slice(0, 4),
+            .slice(1, 6),
           women: productsData
             .filter((product) => product.category === "Women")
-            .slice(0, 4),
+            .slice(1, 6),
           kids: productsData
             .filter((product) => product.category === "Kids")
-            .slice(15, 19),
+            .slice(16, 21),
         });
       }
     } catch (error) {
@@ -74,7 +74,7 @@ export default function HomePage() {
   return (
     <div className="max-screen bg-[#F9F5FF]">
       {/* Banner Section */}
-      <div className="relative w-full h-[700px] overflow-hidden">
+      <div className="relative w-full h-[770px] overflow-hidden">
         {banners.map((banner, index) => (
           <img
             key={index}
@@ -88,7 +88,7 @@ export default function HomePage() {
       </div>
 
       {/* Category Sections */}
-      <div className="py-16 px-6 max-w-4xl mx-auto">
+      <div className="py-16 px-6 max-w-6xl mx-auto">
         {["men", "women", "kids"].map((category) => (
           <section key={category} className="mb-12">
             <div className="flex justify-between items-center mb-6">
@@ -104,7 +104,7 @@ export default function HomePage() {
             </div>
 
             {products[category].length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
                 {products[category].map((product) => (
                   <Link
                     key={product._id}
@@ -114,7 +114,7 @@ export default function HomePage() {
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="w-full h-45 object-cover rounded-t-lg"
+                      className="w-full h-80 object-cover rounded-t-lg"
                     />
                     <div className="p-4 text-gray-800 text-center">
                       <h3 className="text-lg font-semibold truncate">
