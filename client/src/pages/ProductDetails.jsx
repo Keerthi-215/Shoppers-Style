@@ -102,86 +102,90 @@ function ProductDetails() {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full h-85 object-cover rounded-md shadow-lg"
-          />
-        </div>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-gray-600 mt-2 text-lg font-semibold">
-            ${product.price}
-          </p>
-          <div className="mt-4">
-            <h3 className="font-semibold text-lg">Product Description:</h3>
-            <p className="text-gray-700">{product.description}</p>
+    <div className="max-screen bg-[#F9F5FF] min-h-screen">
+      <div className="container mx-auto p-6">
+        <div className="flex flex-col md:flex-row gap-6 bg-white shadow-lg rounded-lg overflow-hidden">
+          <div className="flex-1">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full md:w-[950px] h-[1000px] object-cover object-right rounded-t-lg"
+            />
           </div>
+          <div className="flex-1 p-6">
+            <h1 className="text-3xl font-bold text-purple-900">
+              {product.name}
+            </h1>
+            <p className="text-gray-600 mt-2 text-lg font-semibold">
+              ${product.price}
+            </p>
+            <div className="mt-4">
+              <h3 className="font-semibold text-lg">Product Description:</h3>
+              <p className="text-gray-700">{product.description}</p>
+            </div>
 
-          {/* Size Selection */}
-          <div className="mt-4">
-            <h3 className="font-semibold text-lg">Select Size:</h3>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {getSizes().map((size) => (
-                <label
-                  key={size}
-                  className="flex items-center cursor-pointer px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
-                >
-                  <input
-                    type="radio"
-                    name="size"
-                    checked={selectedSize === size}
-                    onChange={() => handleSizeChange(size)}
-                    className="mr-1 hidden"
-                  />
-                  <span className="text-sm">{size}</span>
-                </label>
-              ))}
+            {/* Size Selection */}
+            <div className="mt-4">
+              <h3 className="font-semibold text-lg">Select Size:</h3>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {getSizes().map((size) => (
+                  <label
+                    key={size}
+                    className="flex items-center cursor-pointer px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                  >
+                    <input
+                      type="radio"
+                      name="size"
+                      checked={selectedSize === size}
+                      onChange={() => handleSizeChange(size)}
+                      className="mr-1 hidden"
+                    />
+                    <span className="text-sm">{size}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="mt-6 flex gap-4">
+              {/* Add to Cart Button */}
+              <button
+                onClick={handleAddToCart}
+                className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
+              >
+                Add to Cart
+              </button>
+
+              {/* Add to Wishlist Button */}
+              <button
+                onClick={handleAddToWishlist}
+                className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
+                disabled={isProductInWishlist}
+              >
+                {isProductInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
+              </button>
             </div>
           </div>
-
-          {/* Buttons */}
-          <div className="mt-6 flex gap-4">
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
-            >
-              Add to Cart
-            </button>
-
-            {/* Add to Wishlist Button */}
-            <button
-              onClick={handleAddToWishlist}
-              className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
-              disabled={isProductInWishlist}
-            >
-              {isProductInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
-            </button>
-          </div>
         </div>
-      </div>
 
-      {/* Toast Notifications */}
-      {showCartToast && (
-        <ToastNotification
-          message="Your product has been added to the cart!"
-          onClose={() => setShowCartToast(false)}
-        />
-      )}
-      {showWishlistToast && (
-        <ToastNotification
-          message="Your product has been added to the wishlist!"
-          onClose={() => setShowWishlistToast(false)}
-        />
-      )}
+        {/* Toast Notifications */}
+        {showCartToast && (
+          <ToastNotification
+            message="Your product has been added to the cart!"
+            onClose={() => setShowCartToast(false)}
+          />
+        )}
+        {showWishlistToast && (
+          <ToastNotification
+            message="Your product has been added to the wishlist!"
+            onClose={() => setShowWishlistToast(false)}
+          />
+        )}
 
-      {/* Reviews Section - Only Stars, No Dropdowns */}
-      <div className="mt-8">
-        <Reviews productId={id} showStarsOnly={true} />
+        {/* Reviews Section - Only Stars, No Dropdowns */}
+        <div className="mt-8">
+          <Reviews productId={id} showStarsOnly={true} />
+        </div>
       </div>
     </div>
   );

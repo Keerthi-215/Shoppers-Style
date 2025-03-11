@@ -29,7 +29,7 @@ const Cart = () => {
   }, [cartItems, getProductDetails]);
 
   return (
-    <div className="container mx-auto p-6 max-w-8xl bg-[#F3E8FF] min-h-screen rounded-lg shadow-lg">
+    <div className="container mx-auto p-6 max-w-7xl bg-[#F3E8FF] min-h-screen rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold mb-8 text-center text-purple-700">
         Your Cart
       </h1>
@@ -60,7 +60,7 @@ const Cart = () => {
             Looks like you haven't added any products to your cart yet.
           </p>
           <Link to="/">
-            <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-300">
+            <button className="btn btn-primary text-white font-medium py-2 px-6 rounded-md transition-colors duration-300">
               Continue Shopping
             </button>
           </Link>
@@ -91,7 +91,7 @@ const Cart = () => {
           <div className="p-4 bg-purple-100">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <button
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors duration-300"
+                className="btn btn-error text-white py-2 px-4 rounded-md transition-colors duration-300"
                 onClick={clearCart}
               >
                 Clear Cart
@@ -102,7 +102,7 @@ const Cart = () => {
               </div>
 
               <Link to="/checkout">
-                <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-md transition-colors duration-300">
+                <button className="btn btn-success text-white py-2 px-6 rounded-md transition-colors duration-300">
                   Proceed to Checkout
                 </button>
               </Link>
