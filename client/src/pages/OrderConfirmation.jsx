@@ -66,30 +66,31 @@ const OrderConfirmation = () => {
 
           const token = localStorage.getItem("token");
           //console.log(token);
+          if (localStorage.getItem("order")) {
+            const res = await axios.post(
+              "http://localhost:5000/api/orders",
+              orderData,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  ...(token && { authorization: `Bearer ${token}` }),
+                },
+              }
+            );
+            setOrder(null);
+            const data = res?.data;
+            // Update the order in localStorage with the MongoDB _id
+            const updatedOrder = {
+              ...savedOrder,
+              _id: data._id || data.id,
+              createdAt: data.createdAt || new Date().toISOString(),
+            };
+            localStorage.setItem("order", JSON.stringify(updatedOrder));
 
-          const res = await axios.post(
-            "http://localhost:5000/api/orders",
-            orderData,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                ...(token && { authorization: `Bearer ${token}` }),
-              },
-            }
-          );
-          const data = res?.data;
-          // Update the order in localStorage with the MongoDB _id
-          const updatedOrder = {
-            ...savedOrder,
-            _id: data._id || data.id,
-            createdAt: data.createdAt || new Date().toISOString(),
-          };
-          localStorage.setItem("order", JSON.stringify(updatedOrder));
-
-          setOrder(updatedOrder);
-          setOrderId(data._id || data.id);
-          setSaveStatus((prev) => ({ ...prev, db: true }));
-
+            setOrder(updatedOrder);
+            setOrderId(data._id || data.id);
+            setSaveStatus((prev) => ({ ...prev, db: true }));
+          }
           // Clear the cart after successful order placement
           clearCart();
           localStorage.removeItem("order");
@@ -109,7 +110,10 @@ const OrderConfirmation = () => {
       setError("Failed to load order information");
       setIsLoading(false);
     }
-  }, [navigate, clearCart]);
+    return () => {
+      return localStorage.removeItem("order");
+    };
+  }, [navigate]);
 
   if (isLoading && !order) {
     return (

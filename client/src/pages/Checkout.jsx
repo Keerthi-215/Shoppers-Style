@@ -57,6 +57,7 @@ const Checkout = () => {
     clearCart(); // Clear the cart items from the context
     localStorage.removeItem("cartItems"); // Clear cart items from localStorage
     setOrderPlaced(true); // Mark the order as placed
+    // http to backend to create the order
     navigate("/order-confirmation"); // Navigate to the Order Confirmation page
   };
   const getTotalPrice = () => {
