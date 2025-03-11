@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { useReviews } from "../components/ReviewContext";
+
 const AddReviewForm = ({ productId }) => {
   const { addReview } = useReviews();
   const [userName, setUserName] = useState("");
-  const [rating, setRating] = useState(1);
+  const [rating, setRating] = useState(1); // Default rating is 1
   const [comment, setComment] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!userName || !comment) {
       alert("Please fill in all fields.");
       return;
     }
+
     const newReview = {
       productId,
       userName,
@@ -18,11 +21,35 @@ const AddReviewForm = ({ productId }) => {
       comment,
     };
     addReview(newReview);
+
     // Reset form after submission
     setUserName("");
-    setRating(1);
+    setRating(1); // Reset rating to 1 after submission
     setComment("");
   };
+
+  const handleStarClick = (starValue) => {
+    setRating(starValue);
+  };
+
+  const renderStars = () => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={`cursor-pointer ${
+            i <= rating ? "text-yellow-500" : "text-gray-300"
+          }`}
+          onClick={() => handleStarClick(i)}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mb-8 p-4 border">
       <h2 className="text-xl font-semibold mb-4">Leave a Review</h2>
@@ -43,18 +70,10 @@ const AddReviewForm = ({ productId }) => {
         <label htmlFor="rating" className="block text-gray-700">
           Rating:
         </label>
-        <select
-          id="rating"
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-          className="w-full p-2 border"
-        >
-          {[1, 2, 3, 4, 5].map((rate) => (
-            <option key={rate} value={rate}>
-              {rate} {rate === 1 ? "Star" : "Stars"}
-            </option>
-          ))}
-        </select>
+        <div className="flex mb-4">
+          {/* Render stars for rating */}
+          {renderStars()}
+        </div>
       </div>
       <div className="mb-4">
         <label htmlFor="comment" className="block text-gray-700">
@@ -78,4 +97,5 @@ const AddReviewForm = ({ productId }) => {
     </form>
   );
 };
+
 export default AddReviewForm;

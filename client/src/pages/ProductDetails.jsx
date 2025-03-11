@@ -5,7 +5,6 @@ import { useCart } from "../components/CartContext";
 import { useWishlist } from "../components/WishlistContext";
 import ToastNotification from "../components/ToastNotification";
 import Reviews from "../pages/Reviews";
-import { FaHeart } from "react-icons/fa"; // Importing heart icon from react-icons
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,6 +16,7 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showCartToast, setShowCartToast] = useState(false);
+  const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
 
   const adultSizes = ["S", "M", "L", "XL", "XXL"];
@@ -58,6 +58,16 @@ function ProductDetails() {
     }
   };
 
+  const handleAddToWishlist = () => {
+    if (product) {
+      const productWithSize = selectedSize
+        ? { ...product, selectedSize }
+        : product;
+      addToWishlist(productWithSize);
+      setShowWishlistToast(true);
+    }
+  };
+
   const handleSizeChange = (size) => {
     setSelectedSize(size);
   };
@@ -67,7 +77,6 @@ function ProductDetails() {
     const productName = product.name?.toLowerCase() || "";
     const productDescription = product.description?.toLowerCase() || "";
     const productCategory = product.category?.toLowerCase() || "";
-
     return (
       productName.includes("kid") ||
       productName.includes("child") ||
@@ -85,90 +94,94 @@ function ProductDetails() {
     return isKidsProduct() ? kidsSizes : adultSizes;
   };
 
-  if (loading)
-    return <p className="text-center text-lg">Loading product details...</p>;
+  const isProductInWishlist = wishlist.some(
+    (item) => item._id === product?._id
+  );
+
+  if (loading) return <p className="text-center">Loading product details...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Product Image */}
+      <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="w-full h-96 object-cover rounded-lg shadow-md"
+            className="w-full h-85 object-cover rounded-md shadow-lg"
           />
         </div>
-
-        {/* Product Info */}
-        <div className="flex-1 space-y-4">
+        <div className="flex-1">
           <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-gray-600 text-lg font-semibold">
+          <p className="text-gray-600 mt-2 text-lg font-semibold">
             ${product.price}
           </p>
-
-          {/* Description */}
-          <div>
+          <div className="mt-4">
             <h3 className="font-semibold text-lg">Product Description:</h3>
             <p className="text-gray-700">{product.description}</p>
           </div>
 
           {/* Size Selection */}
-          <div>
+          <div className="mt-4">
             <h3 className="font-semibold text-lg">Select Size:</h3>
-            <div className="flex flex-wrap gap-3 mt-2">
+            <div className="flex flex-wrap gap-2 mt-2">
               {getSizes().map((size) => (
                 <label
                   key={size}
-                  className={`px-4 py-2 border rounded-md cursor-pointer text-sm ${
-                    selectedSize === size
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-700"
-                  }`}
+                  className="flex items-center cursor-pointer px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
                 >
                   <input
                     type="radio"
                     name="size"
                     checked={selectedSize === size}
                     onChange={() => handleSizeChange(size)}
-                    className="hidden"
+                    className="mr-1 hidden"
                   />
-                  {size}
+                  <span className="text-sm">{size}</span>
                 </label>
               ))}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center gap-6">
+          <div className="mt-6 flex gap-4">
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded-md shadow-md transition-all"
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
             >
               Add to Cart
             </button>
 
-            {/* Wishlist Heart Icon */}
-            <button className="text-red-500 text-2xl hover:scale-110 transition-all">
-              <FaHeart />
+            {/* Add to Wishlist Button */}
+            <button
+              onClick={handleAddToWishlist}
+              className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-3 text-sm font-semibold rounded-md shadow-md transition"
+              disabled={isProductInWishlist}
+            >
+              {isProductInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Show Toast for Cart */}
+      {/* Toast Notifications */}
       {showCartToast && (
         <ToastNotification
           message="Your product has been added to the cart!"
           onClose={() => setShowCartToast(false)}
         />
       )}
+      {showWishlistToast && (
+        <ToastNotification
+          message="Your product has been added to the wishlist!"
+          onClose={() => setShowWishlistToast(false)}
+        />
+      )}
 
-      {/* Reviews Section with Stars */}
+      {/* Reviews Section - Only Stars, No Dropdowns */}
       <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-2">Reviews</h3>
+        <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
         <Reviews productId={id} showStarsOnly={true} />
       </div>
     </div>
