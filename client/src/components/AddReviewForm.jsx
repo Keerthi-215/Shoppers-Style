@@ -52,7 +52,7 @@ const AddReviewForm = ({ productId }) => {
 
   return (
     <form onSubmit={handleSubmit} className="mb-8 p-4 border">
-      <h2 className="text-xl font-semibold mb-4">Leave a Review</h2>
+      <h2 className="text-xl font-semibold mb-4">Write a Review</h2>
       <div className="mb-4">
         <label htmlFor="userName" className="block text-gray-700">
           Your Name:
@@ -90,7 +90,7 @@ const AddReviewForm = ({ productId }) => {
       </div>
       <button
         type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-3 rounded text-sm hover:bg-blue-600"
       >
         Submit Review
       </button>

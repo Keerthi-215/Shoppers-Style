@@ -34,7 +34,7 @@ const ReviewList = ({ productId }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+      <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
       {productReviews.length === 0 ? (
         <p>No reviews yet for this product.</p>
       ) : (
