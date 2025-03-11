@@ -11,7 +11,7 @@ const CartItem = ({
         <img
           src={item.imageUrl}
           alt={item.name}
-          className="w-16 h-16 object-cover rounded-md"
+          className="w-auto h-[450px] object-cover rounded-md shadow-md"
         />
         <div className="ml-4">
           <h3 className="font-semibold">{item.name}</h3>

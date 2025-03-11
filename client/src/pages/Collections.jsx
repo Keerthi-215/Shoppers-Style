@@ -144,7 +144,7 @@ function Collections() {
                       className="w-full h-full object-cover"
                     />
                   </figure>
-                  <div className="card-body p-4 text-center">
+                  <div className="card-body p-4 ">
                     <h2 className="card-title text-lg font-semibold text-gray-800 truncate">
                       {product.name}
                     </h2>
