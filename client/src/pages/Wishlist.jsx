@@ -5,12 +5,14 @@ const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
   return (
     <div className="bg-[#F9F5FF] min-h-screen">
-      {" "}
       {/* Added purple background */}
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Your Wishlist</h1>
+        <h1 className="text-3xl font-bold mb-6 text-purple-700">
+          Your Wishlist
+        </h1>
+
         {wishlist.length === 0 ? (
-          <p className="text-gray-600">
+          <p className="text-purple-600">
             Your wishlist is empty. Add some items!
           </p>
         ) : (
@@ -25,8 +27,10 @@ const Wishlist = () => {
                   alt={product.name}
                   className="w-full h-112 object-cover rounded-md"
                 />
-                <h2 className="text-xl font-semibold mt-2">{product.name}</h2>
-                <p className="text-gray-600">${product.price}</p>
+                <h2 className="text-xl font-semibold mt-2 text-purple-700">
+                  {product.name}
+                </h2>
+                <p className="text-purple-600">${product.price}</p>
                 <div className="mt-4 flex justify-between">
                   <Link
                     to={`/product/${product._id}`} // Corrected to use _id
