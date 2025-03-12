@@ -4,7 +4,7 @@ import axios from "axios";
 
 // API instance for cleaner requests
 const api = axios.create({
-  baseURL: "https://shoppers-bsxp.onrender.com/api/auth",
+  baseURL: "https://shoppers-bsxp.onrender.com/api",
   headers: { "Content-Type": "application/json" },
 });
 
