@@ -31,7 +31,7 @@ import FAQ from "./pages/FAQ"; // Added FAQ import
 
 // Set up a global axios instance for API calls
 const api = axios.create({
-  baseURL: "https://shoppers-bsxp.onrender.com/",
+  baseURL: "http://localhost:5000/api",
   headers: { "Content-Type": "application/json" },
 });
 

@@ -68,7 +68,7 @@ const OrderConfirmation = () => {
           //console.log(token);
           if (localStorage.getItem("order")) {
             const res = await axios.post(
-              "https://shoppers-bsxp.onrender.com//orders",
+              "http://localhost:5000/api/orders",
               orderData,
               {
                 headers: {

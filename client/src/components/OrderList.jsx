@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "https://shoppers-bsxp.onrender.com/";
+const API_BASE_URL = "http://localhost:5000/api";
 
 function OrderList() {
   const [orders, setOrders] = useState([]);
