@@ -30,8 +30,10 @@ import Reviews from "./pages/Reviews";
 import FAQ from "./pages/FAQ"; // Added FAQ import
 
 // Set up a global axios instance for API calls
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const api = axios.create({
-  baseURL: "https://shoppers-bsxp.onrender.com/api",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
