@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ProfilePage = ({ user, onUpdate }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -72,16 +74,12 @@ const ProfilePage = ({ user, onUpdate }) => {
         updateData.password = formData.password;
       }
 
-      await axios.put(
-        `http://localhost:5000/api/users/${currentUser._id}`,
-        updateData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.put(`${API_BASE_URL}/users/${currentUser._id}`, updateData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const updatedUser = { ...currentUser, ...updateData };
       localStorage.setItem("user", JSON.stringify(updatedUser));

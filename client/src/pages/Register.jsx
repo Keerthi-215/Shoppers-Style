@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // API instance for cleaner requests
 const api = axios.create({
+<<<<<<< HEAD
   baseURL: "https://shoppers-bsxp.onrender.com/api",
+=======
+  baseURL: API_BASE_URL,
+>>>>>>> feature/frontend
   headers: { "Content-Type": "application/json" },
 });
 
@@ -42,7 +47,7 @@ const Register = () => {
     }
 
     try {
-      await api.post("/register", formData);
+      await api.post("/auth/register", formData);
 
       setSuccess("User created successfully! Redirecting...");
       setFormData({ name: "", email: "", password: "", address: "" });

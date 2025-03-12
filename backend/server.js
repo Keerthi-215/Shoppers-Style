@@ -17,21 +17,25 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 // Load environment variables
 dotenv.config();
-
+const clientUrl = process.env.CLIENT_URL;
 // Connect to MongoDB
 connectDB();
 
 const app = express();
-if (!5000 || !"http://localhost:5173") {
-  console.error("Please provide PORT and CLIENT_URL");
-  process.exit(1);
-}
+// if (!5000 || !"http://localhost:5173") {
+//   console.error("Please provide PORT and CLIENT_URL");
+//   process.exit(1);
+// }
 
 // Middleware
 app.use(express.json()); // Body parser
 app.use(
   cors({
+<<<<<<< HEAD
     origin: "*",
+=======
+    origin: clientUrl,
+>>>>>>> feature/frontend
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],

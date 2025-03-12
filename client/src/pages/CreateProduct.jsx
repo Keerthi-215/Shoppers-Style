@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const CreateProduct = ({ api }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [productName, setProductName] = useState("");

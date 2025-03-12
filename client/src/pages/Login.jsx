@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -24,8 +25,11 @@ const Login = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API_BASE_URL}/auth/login`,
         { email, password }
+        // const { data } = await axios.post(
+        //   "https://shoppers-bsxp.onrender.com/auth/login",
+        //   { email, password }
       );
 
       const { token, user } = data;

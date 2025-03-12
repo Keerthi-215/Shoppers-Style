@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../components/CartContext";
 
 const OrderConfirmation = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
   const [order, setOrder] = useState(null);
@@ -11,9 +13,6 @@ const OrderConfirmation = () => {
   const [error, setError] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Fixed API endpoint - ensure it matches your backend configuration
-  const API_PATH = "/api/orders";
 
   useEffect(() => {
     // Get order details from localStorage
@@ -67,16 +66,12 @@ const OrderConfirmation = () => {
           const token = localStorage.getItem("token");
           //console.log(token);
           if (localStorage.getItem("order")) {
-            const res = await axios.post(
-              "http://localhost:5000/api/orders",
-              orderData,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  ...(token && { authorization: `Bearer ${token}` }),
-                },
-              }
-            );
+            const res = await axios.post(`${API_BASE_URL}/orders`, orderData, {
+              headers: {
+                "Content-Type": "application/json",
+                ...(token && { authorization: `Bearer ${token}` }),
+              },
+            });
             setOrder(null);
             const data = res?.data;
             // Update the order in localStorage with the MongoDB _id
