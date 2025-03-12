@@ -5,9 +5,9 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [returnReasons, setReturnReasons] = useState({}); // Track return reasons
+  const [returnReasons, setReturnReasons] = useState({});
   const [disabledReturns, setDisabledReturns] = useState(
-    JSON.parse(localStorage.getItem("disabledReturns")) || {} // Load from localStorage
+    JSON.parse(localStorage.getItem("disabledReturns")) || {}
   );
 
   useEffect(() => {
@@ -27,23 +27,15 @@ const OrderHistory = () => {
           return;
         }
 
-        const userId = user._id;
-        console.log("🔍 Fetching orders for user:", userId);
-
         const response = await axios.get(
-          `http://localhost:5000/api/orders/user/${userId}`,
+          `http://localhost:5000/api/orders/user/${user._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        console.log("✅ API Response:", response.data);
         setOrders(response.data);
       } catch (err) {
-        console.error(
-          "❌ Error fetching orders:",
-          err.response?.data || err.message
-        );
         setError(err.response?.data?.message || "Failed to fetch orders");
       } finally {
         setLoading(false);
@@ -53,17 +45,14 @@ const OrderHistory = () => {
     fetchOrders();
   }, []);
 
-  // Show return reason input when clicking "Return Order"
   const handleReturnClick = (orderId) => {
-    setReturnReasons((prev) => ({ ...prev, [orderId]: "" })); // Initialize reason input
+    setReturnReasons((prev) => ({ ...prev, [orderId]: "" }));
   };
 
-  // Update reason input
   const handleReasonChange = (orderId, reason) => {
     setReturnReasons((prev) => ({ ...prev, [orderId]: reason }));
   };
 
-  // Submit return request (Static - Only Alert & Disable Button, Saved in Local Storage)
   const handleSubmitReturn = (orderId) => {
     const reason = returnReasons[orderId];
     if (!reason.trim()) {
@@ -71,17 +60,14 @@ const OrderHistory = () => {
       return;
     }
 
-    alert("Your return is getting processed."); // Show static alert
-
-    // Disable the return button for this order
+    alert("Your return is getting processed.");
     const updatedDisabledReturns = { ...disabledReturns, [orderId]: true };
     setDisabledReturns(updatedDisabledReturns);
     localStorage.setItem(
       "disabledReturns",
       JSON.stringify(updatedDisabledReturns)
-    ); // Save to localStorage
+    );
 
-    // Remove the reason input
     setReturnReasons((prev) => {
       const newState = { ...prev };
       delete newState[orderId];
@@ -89,83 +75,90 @@ const OrderHistory = () => {
     });
   };
 
-  if (loading)
-    return (
-      <p className="text-lg text-center text-gray-500">Loading orders...</p>
-    );
-  if (error) return <p className="text-lg text-center text-red-500">{error}</p>;
-
   return (
-    <div className="order-history max-w-3xl mx-auto p-6 bg-[#F3E8FF] rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">
-        Order History
-      </h2>
+    <div className="min-h-screen flex flex-col items-center bg-gray-100">
+      <div className="w-full max-w-3xl p-6 bg-white shadow-lg rounded-lg my-6">
+        <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">
+          Order History
+        </h2>
 
-      {orders.length === 0 ? (
-        <p className="text-center text-gray-600">No orders found.</p>
-      ) : (
-        <ul className="space-y-6">
-          {orders.map((order) => (
-            <li
-              key={order._id}
-              className="p-5 border border-purple-300 rounded-lg shadow-md bg-white"
-            >
-              <h3 className="text-xl font-semibold text-purple-800">
-                Order ID: {order._id}
-              </h3>
-              <p className="text-gray-600">
-                <strong className="text-purple-700">Status:</strong>{" "}
-                {order.status}
-              </p>
-              <p className="text-gray-600">
-                <strong className="text-purple-700">Total Price:</strong> $
-                {order.totalPrice?.toFixed(2)}
-              </p>
-              <p className="text-gray-600">
-                <strong className="text-purple-700">Ordered on:</strong>{" "}
-                {new Date(order.createdAt).toLocaleDateString()}
-              </p>
+        {loading ? (
+          <p className="text-lg text-center text-gray-500">Loading orders...</p>
+        ) : error ? (
+          <p className="text-lg text-center text-red-500">{error}</p>
+        ) : orders.length === 0 ? (
+          <div className="flex items-center justify-center h-[50vh]">
+            <p className="text-xl text-gray-500">No orders found.</p>
+          </div>
+        ) : (
+          <ul className="space-y-6">
+            {orders.map((order) => (
+              <li
+                key={order._id}
+                className="card bg-white shadow-lg p-5 rounded-lg"
+              >
+                <h3 className="text-xl font-semibold text-purple-800">
+                  Order ID: {order._id}
+                </h3>
+                <p className="text-gray-600">
+                  <strong className="text-purple-700">Status:</strong>{" "}
+                  {order.status}
+                </p>
+                <p className="text-gray-600">
+                  <strong className="text-purple-700">Total Price:</strong> $
+                  {order.totalPrice?.toFixed(2)}
+                </p>
+                <p className="text-gray-600">
+                  <strong className="text-purple-700">Ordered on:</strong>{" "}
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </p>
 
-              {order.status === "delivered" && (
-                <>
-                  {!returnReasons.hasOwnProperty(order._id) ? (
-                    <button
-                      onClick={() => handleReturnClick(order._id)}
-                      disabled={disabledReturns[order._id]}
-                      className={`mt-4 px-4 py-2 rounded-md transition duration-200 ${
-                        disabledReturns[order._id]
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-purple-600 text-white hover:bg-purple-700"
-                      }`}
-                    >
-                      {disabledReturns[order._id]
-                        ? "Return Requested"
-                        : "Return Order"}
-                    </button>
-                  ) : (
-                    <div className="mt-4">
-                      <textarea
-                        value={returnReasons[order._id]}
-                        onChange={(e) =>
-                          handleReasonChange(order._id, e.target.value)
-                        }
-                        placeholder="Enter return reason..."
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                      />
+                {order.status === "delivered" && (
+                  <>
+                    {!returnReasons.hasOwnProperty(order._id) ? (
                       <button
-                        onClick={() => handleSubmitReturn(order._id)}
-                        className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition duration-200"
+                        onClick={() => handleReturnClick(order._id)}
+                        disabled={disabledReturns[order._id]}
+                        className={`btn w-24 mt-4 ${
+                          disabledReturns[order._id]
+                            ? "btn-disabled"
+                            : "bg-blue-500 hover:bg-blue-600 text-white"
+                        }`}
                       >
-                        Submit Return
+                        {disabledReturns[order._id]
+                          ? "Return Requested"
+                          : "Return Order"}
                       </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+                    ) : (
+                      <div className="mt-4">
+                        <textarea
+                          value={returnReasons[order._id]}
+                          onChange={(e) =>
+                            handleReasonChange(order._id, e.target.value)
+                          }
+                          placeholder="Enter return reason..."
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                          onClick={() => handleSubmitReturn(order._id)}
+                          className="btn btn-error mt-2"
+                        >
+                          Submit Return
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Footer at the bottom */}
+      {/* <footer className="w-full bg-gray-200 py-4 text-center text-gray-600 mt-auto">
+        &copy; {new Date().getFullYear()} My E-Commerce. All rights reserved.
+      </footer> */}
     </div>
   );
 };

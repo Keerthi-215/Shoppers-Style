@@ -109,6 +109,7 @@ function Collections() {
                 <option value="Casual Wear">Casual Wear</option>
                 <option value="Luxury">Luxury</option>
                 <option value="Indian wear">Indian wear</option>
+                <option value="Western">Western</option>
               </select>
             </div>
 
