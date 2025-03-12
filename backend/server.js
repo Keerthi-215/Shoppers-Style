@@ -13,9 +13,11 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
+//const CLIENT_URL = "http://localhost:5173";
+
 // Load environment variables
 dotenv.config();
-
+const clientUrl = process.env.CLIENT_URL;
 // Connect to MongoDB
 connectDB();
 
@@ -29,7 +31,7 @@ const app = express();
 app.use(express.json()); // Body parser
 app.use(
   cors({
-    origin: "https://shoppersstyle.netlify.app",
+    origin: clientUrl,
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],

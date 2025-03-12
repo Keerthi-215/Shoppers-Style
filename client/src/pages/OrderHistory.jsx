@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const OrderHistory = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -28,7 +30,7 @@ const OrderHistory = () => {
         }
 
         const response = await axios.get(
-          `https://shoppers-bsxp.onrender.com/api/orders/user/${user._id}`,
+          `${API_BASE_URL}/orders/user/${user._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

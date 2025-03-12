@@ -1,5 +1,7 @@
 // Function to fetch orders by user ID
 const fetchOrdersByUserId = async (userId) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   try {
     // Validate that userId is provided
     if (!userId) {
@@ -7,7 +9,7 @@ const fetchOrdersByUserId = async (userId) => {
     }
 
     // Create the URL for the API endpoint
-    const url = `/api/orders/user/${userId}`;
+    const url = `${API_BASE_URL}/orders/user/${userId}`;
 
     // Make the API request
     const response = await fetch(url, {
