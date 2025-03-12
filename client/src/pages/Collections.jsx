@@ -109,6 +109,7 @@ function Collections() {
                 <option value="Casual Wear">Casual Wear</option>
                 <option value="Luxury">Luxury</option>
                 <option value="Indian wear">Indian wear</option>
+                <option value="Western">Western</option>
               </select>
             </div>
 
@@ -137,7 +138,7 @@ function Collections() {
                 className="card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-transform transform hover:scale-105"
               >
                 <Link to={`/product/${product._id}`}>
-                  <figure className="relative h-90 w-full overflow-hidden rounded-t-lg">
+                  <figure className="relative h-96 w-full overflow-hidden rounded-t-lg">
                     <img
                       src={product.imageUrl}
                       alt={product.name}
