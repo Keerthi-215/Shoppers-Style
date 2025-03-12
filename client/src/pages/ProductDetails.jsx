@@ -103,7 +103,7 @@ function ProductDetails() {
 
   return (
     <div className="max-screen bg-[#F9F5FF] min-h-screen">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-10">
         <div className="flex flex-col md:flex-row gap-6 bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="flex-1">
             <img
@@ -113,7 +113,7 @@ function ProductDetails() {
             />
           </div>
           <div className="flex-1 p-6">
-            <h1 className="text-3xl font-bold text-purple-900">
+            <h1 className="text-3xl font-bold text-purple-700">
               {product.name}
             </h1>
             <p className="text-gray-600 mt-2 text-lg font-semibold">
