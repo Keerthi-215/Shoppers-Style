@@ -28,7 +28,7 @@ const OrderHistory = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:5000/api/orders/user/${user._id}`,
+          `https://shoppers-bsxp.onrender.com/api/orders/user/${user._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
