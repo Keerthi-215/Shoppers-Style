@@ -31,11 +31,7 @@ const app = express();
 app.use(express.json()); // Body parser
 app.use(
   cors({
-<<<<<<< HEAD
-    origin: "*",
-=======
     origin: clientUrl,
->>>>>>> feature/frontend
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],

@@ -5,11 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // API instance for cleaner requests
 const api = axios.create({
-<<<<<<< HEAD
-  baseURL: "https://shoppers-bsxp.onrender.com/api",
-=======
   baseURL: API_BASE_URL,
->>>>>>> feature/frontend
   headers: { "Content-Type": "application/json" },
 });
 
