@@ -20,16 +20,16 @@ dotenv.config();
 connectDB();
 
 const app = express();
-if (!5000 || !"http://localhost:5173") {
-  console.error("Please provide PORT and CLIENT_URL");
-  process.exit(1);
-}
+// if (!5000 || !"http://localhost:5173") {
+//   console.error("Please provide PORT and CLIENT_URL");
+//   process.exit(1);
+// }
 
 // Middleware
 app.use(express.json()); // Body parser
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://shoppersstyle.netlify.app/",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
