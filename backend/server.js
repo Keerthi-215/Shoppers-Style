@@ -13,6 +13,8 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
+//const CLIENT_URL = "http://localhost:5173";
+
 // Load environment variables
 dotenv.config();
 
