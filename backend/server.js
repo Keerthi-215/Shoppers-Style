@@ -29,7 +29,7 @@ const app = express();
 app.use(express.json()); // Body parser
 app.use(
   cors({
-    origin: "https://shoppersstyle.netlify.app/",
+    origin: "https://shoppersstyle.netlify.app",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
