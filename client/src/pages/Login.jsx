@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://shoppers-bsxp.onrender.com//auth/login",
         { email, password }
       );
 
