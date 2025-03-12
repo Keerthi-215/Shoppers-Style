@@ -13,12 +13,6 @@ const Cart = () => {
     getProductDetails,
   } = useContext(CartContext);
 
-  // Calculate total price
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + (item.price || 0) * item.quantity,
-    0
-  );
-
   // Fetch missing product details for cart items (if needed)
   useEffect(() => {
     cartItems.forEach((item) => {
@@ -30,14 +24,14 @@ const Cart = () => {
 
   return (
     <div className="bg-[#F9F5FF] min-h-screen py-6">
-      <div className="container mx-auto p-6 max-w-7xl">
-        <h1 className="text-3xl font-bold mb-8 text-center text-purple-700">
+      <div className="container mx-auto p-4 max-w-5xl">
+        <h1 className="text-3xl font-bold mb-6 text-center text-purple-700">
           Your Cart
         </h1>
 
         {cartItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-14 bg-white rounded-lg shadow-md">
-            <div className="text-purple-400 text-6xl mb-4">
+          <div className="flex flex-col items-center justify-center py-10 bg-white rounded-lg shadow-md">
+            <div className="text-purple-400 text-6xl mb-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="64"
@@ -54,34 +48,27 @@ const Cart = () => {
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
               </svg>
             </div>
-            <p className="text-center text-gray-600 text-xl mb-4">
+            <p className="text-center text-gray-600 text-lg mb-3">
               Your cart is empty!
             </p>
-            <p className="text-center text-gray-500 mb-6">
-              Looks like you haven't added any products to your cart yet.
-            </p>
             <Link to="/">
-              <button className="btn btn-primary text-white font-medium py-2 px-6 rounded-md transition-colors duration-300">
+              <button className="btn btn-primary text-white py-2 px-5 rounded-md">
                 Continue Shopping
               </button>
             </Link>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Cart Items Header */}
-            <div className="bg-purple-100 p-4 grid grid-cols-12 gap-4 border-b text-purple-700 font-medium">
-              <div className="col-span-6 sm:col-span-7">Product</div>
-              <div className="col-span-3 sm:col-span-3 text-center">
-                Quantity
-              </div>
-              <div className="col-span-3 sm:col-span-2 text-right">Price</div>
+            {/* Cart Header - Keeping "Product" centered */}
+            <div className="bg-purple-100 p-3 grid grid-cols-1 text-purple-700 font-medium text-sm text-center">
+              <div className="col-span-1">Product</div>
             </div>
 
-            {/* List all cart items */}
+            {/* Cart Items */}
             <div className="divide-y">
               {cartItems.map((item) => (
                 <CartItem
-                  key={item._id} // Use item._id as the key to ensure no duplication
+                  key={item._id} // Keeping your original logic
                   item={item}
                   removeFromCart={removeFromCart}
                   increaseQuantity={increaseQuantity}
@@ -90,22 +77,18 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* Cart Footer - Actions and Total */}
+            {/* Cart Footer */}
             <div className="p-4 bg-purple-100">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
                 <button
-                  className="btn btn-error text-white py-2 px-4 rounded-md transition-colors duration-300"
+                  className="btn btn-error text-white py-2 px-4 rounded-md"
                   onClick={clearCart}
                 >
                   Clear Cart
                 </button>
 
-                <div className="text-lg font-semibold text-purple-700">
-                  Total: ${totalPrice.toFixed(2)}
-                </div>
-
                 <Link to="/shipment">
-                  <button className="btn btn-success text-white py-2 px-6 rounded-md transition-colors duration-300">
+                  <button className="btn btn-success text-white py-2 px-5 rounded-md">
                     Proceed to Checkout
                   </button>
                 </Link>
