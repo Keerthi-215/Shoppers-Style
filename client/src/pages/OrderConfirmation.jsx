@@ -227,12 +227,12 @@ const OrderConfirmation = () => {
             <p className="text-center text-red-500">Order details not found.</p>
           )}
           <div className="text-center mt-8">
-            <button
+            {/* <button
               onClick={() => navigate("/")}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Go to Home
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
