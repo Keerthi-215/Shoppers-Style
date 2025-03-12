@@ -31,12 +31,20 @@ const app = express();
 app.use(express.json()); // Body parser
 app.use(
   cors({
-    origin: clientUrl,
+    origin: "*",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+// app.use(
+//   cors({
+//     origin: clientUrl,
+//     credentials: true,
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//   })
+// );
 
 // Enable CORS
 app.get("/", (req, res) => {
