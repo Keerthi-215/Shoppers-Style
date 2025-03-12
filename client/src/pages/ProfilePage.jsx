@@ -73,7 +73,7 @@ const ProfilePage = ({ user, onUpdate }) => {
       }
 
       await axios.put(
-        `http://localhost:5000/api/users/${currentUser._id}`,
+        `https://shoppers-bsxp.onrender.com/api/users/${currentUser._id}`,
         updateData,
         {
           headers: {
